@@ -1,0 +1,25 @@
+.container {
+	width: 90%;
+	max-width: 96rem;
+	margin: 8rem auto;
+	border-radius: 20px;
+	box-shadow: 2px 4px 6px rgba(28, 6, 49, 0.1);
+	background: white;
+}
+
+.error {
+	color: #ff3f80;
+	font-size: 14px;
+	text-align: left;
+}
+
+button {
+	text-decoration: none;
+	background: var(--primary);
+	color: white;
+	font-weight: bold;
+	border: 0;
+	border-radius: 20px;
+	padding: 1rem 2rem;
+	cursor: pointer;
+}
