@@ -11,7 +11,8 @@
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 export default {
-	setup() {
+	emit: ["login"],
+	setup(props, context) {
 		// Vue stuff
 		const store = useStore();
 
@@ -23,7 +24,7 @@ export default {
 
 		const handleSubmit = async () => {
 			// Login
-			formIsValid.value = false;
+			formIsValid.value = true;
 
 			await store.dispatch("login", {
 				email: email.value,
@@ -31,6 +32,7 @@ export default {
 			});
 
 			if (error.value) formIsValid.value = false;
+			else context.emit("login");
 		};
 
 		return { email, password, handleSubmit, formIsValid, error };
