@@ -22,20 +22,23 @@ export default {
 		const email = ref("");
 		const password = ref("");
 		const formIsValid = ref(true);
-		const error = computed(() => store.getters.getError);
+		const error = ref("");
 
+		// Signup
 		const handleSubmit = async () => {
-			// Signup
 			formIsValid.value = true;
-
-			await store.dispatch("signup", {
-				email: email.value,
-				password: password.value,
-				displayName: displayName.value,
-			});
-
-			if (error.value) formIsValid.value = false;
-			else context.emit("signup");
+			error.value = "";
+			try {
+				await store.dispatch("signup", {
+					email: email.value,
+					password: password.value,
+					displayName: displayName.value,
+				});
+				context.emit("signup");
+			} catch (err) {
+				formIsValid.value = false;
+				error.value = err.message;
+			}
 		};
 
 		return { displayName, email, password, handleSubmit, formIsValid, error };

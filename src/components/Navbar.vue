@@ -1,7 +1,7 @@
 <template>
 	<nav v-if="user">
 		<div>
-			<p>Hey there... {{ user.displayName }}</p>
+			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">Currently logged in as {{ user.email }}</p>
 		</div>
 		<button @click="handleClick">Logout</button>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 export default {
@@ -20,7 +20,6 @@ export default {
 
 		// Variables
 		const user = computed(() => store.getters.getUser);
-		console.log(user.value);
 
 		// Logout
 		const handleClick = async () => {

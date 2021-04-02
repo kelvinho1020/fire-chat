@@ -20,19 +20,22 @@ export default {
 		const email = ref("");
 		const password = ref("");
 		const formIsValid = ref(true);
-		const error = computed(() => store.getters.getError);
+		const error = ref("");
 
+		// Login
 		const handleSubmit = async () => {
-			// Login
 			formIsValid.value = true;
-
-			await store.dispatch("login", {
-				email: email.value,
-				password: password.value,
-			});
-
-			if (error.value) formIsValid.value = false;
-			else context.emit("login");
+			error.value = "";
+			try {
+				await store.dispatch("login", {
+					email: email.value,
+					password: password.value,
+				});
+				context.emit("login");
+			} catch (err) {
+				formIsValid.value = false;
+				error.value = err.message;
+			}
 		};
 
 		return { email, password, handleSubmit, formIsValid, error };
