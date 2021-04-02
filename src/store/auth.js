@@ -14,8 +14,8 @@ export default {
 		async signup(context, payload) {
 			try {
 				context.commit("setError", { error: null });
-				if (payload.displayName === "") {
-					context.commit("setError", { error: "Please enter a display name!" });
+				if (payload.displayName === "" || !payload.email.includes(".com") || !payload.email.includes("@")) {
+					context.commit("setError", { error: "Please enter valid email and display name!" });
 					return;
 				}
 
@@ -26,6 +26,16 @@ export default {
 
 				await res.user.updateProfile({ displayName: payload.displayName });
 				console.log(res.user);
+			} catch (err) {
+				context.commit("setError", { error: err.message });
+				console.log(err.message);
+			}
+		},
+		async login(context, payload) {
+			try {
+				context.commit("setError", { error: null });
+				const res = await projectAuth.signInWithEmailAndPassword(payload.email, payload.password);
+				console.log(res);
 			} catch (err) {
 				context.commit("setError", { error: err.message });
 				console.log(err.message);

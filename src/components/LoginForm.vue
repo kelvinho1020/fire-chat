@@ -3,32 +3,37 @@
 		<input type="email" placeholder="email" v-model="email" required />
 		<input type="password" placeholder="password" v-model="password" required />
 		<button>Log in</button>
-		<p v-if="!formIsValid" class="error">Please enter a valid email and password<br />(at least 6 characters long)</p>
+		<p v-if="!formIsValid" class="error">{{ error }}</p>
 	</form>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 export default {
 	setup() {
+		// Vue stuff
+		const store = useStore();
+
+		// Variables
 		const email = ref("");
 		const password = ref("");
 		const formIsValid = ref(true);
+		const error = computed(() => store.getters.getError);
 
-		const handleSubmit = () => {
-			if (
-				email.value === "" ||
-				!email.value.includes("@") ||
-				!email.value.includes(".com") ||
-				password.value.length < 6
-			) {
-				formIsValid.value = false;
-				return;
-			}
-			console.log(email, password);
+		const handleSubmit = async () => {
+			// Login
+			formIsValid.value = false;
+
+			await store.dispatch("login", {
+				email: email.value,
+				password: password.value,
+			});
+
+			if (error.value) formIsValid.value = false;
 		};
 
-		return { email, password, handleSubmit, formIsValid };
+		return { email, password, handleSubmit, formIsValid, error };
 	},
 };
 </script>

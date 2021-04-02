@@ -22,6 +22,7 @@ export default {
 	components: { SignupForm, LoginForm },
 	setup() {
 		const showLogin = ref(true);
+
 		return { showLogin };
 	},
 };
