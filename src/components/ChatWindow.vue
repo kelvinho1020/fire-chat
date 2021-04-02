@@ -1,5 +1,5 @@
 <template>
-	<div class="chat-window">
+	<div class="chat-window" @scroll.capture="handleScroll">
 		<p v-if="error">{{ error }}</p>
 		<div class="messages" v-if="formattedDocuments" ref="messages">
 			<div class="single" v-for="message in formattedDocuments" :key="message.id">
@@ -12,21 +12,34 @@
 </template>
 
 <script>
-import { computed, ref, onUpdated, watchEffect } from "vue";
+import { computed, ref, onUpdated, watchEffect, onBeforeMount, onMounted, watch } from "vue";
 import { projectFirestore } from "../firebase/config";
 import { formatDistanceToNow } from "date-fns";
+
 export default {
 	setup() {
 		const documents = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
+		const sliceNumber = ref(10);
+
+		const handleScroll = () => {
+			if (messages.value.scrollTop <= 5) {
+				sliceNumber.value += 5;
+			}
+		};
 
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
-				return documents.value.map(doc => {
-					let time = formatDistanceToNow(doc.createdAt.toDate());
-					return { ...doc, createdAt: time };
-				});
+				if (documents.value.length >= 10) {
+					let start = documents.value.length - sliceNumber.value;
+					let end = documents.value.length;
+					console.log(start, end);
+					return documents.value.slice(start, end).map(doc => {
+						let time = formatDistanceToNow(doc.createdAt.toDate());
+						return { ...doc, createdAt: time };
+					});
+				}
 			}
 		});
 
@@ -57,7 +70,7 @@ export default {
 			messages.value.scrollTop = messages.value.scrollHeight;
 		});
 
-		return { documents, error, formattedDocuments, messages };
+		return { documents, error, formattedDocuments, messages, handleScroll};
 	},
 };
 </script>
