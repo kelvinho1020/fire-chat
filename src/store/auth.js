@@ -51,9 +51,12 @@ export default {
 				throw new Error(err.message);
 			}
 		},
-		userDetect(context) {
+		userDetect(context, payload) {
 			let user = projectAuth.currentUser;
-			context.commit("setUser", { user });
+			// projectAuth.onAuthStateChanged(_user => {
+			// 	user = _user;
+			// });
+			context.commit("setUser", payload ? { payload } : { user });
 		},
 	},
 	getters: {

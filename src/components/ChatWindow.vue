@@ -1,5 +1,5 @@
 <template>
-	<div class="chat-window" @scroll.capture="handleScroll">
+	<div class="chat-window">
 		<p v-if="error">{{ error }}</p>
 		<div class="messages" v-if="formattedDocuments && user" ref="messages">
 			<div
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { computed, ref, onUpdated, watchEffect, onBeforeMount, onMounted, watch } from "vue";
+import { computed, ref, onUpdated, watchEffect } from "vue";
 import { projectFirestore } from "../firebase/config";
 import { useStore } from "vuex";
 import { formatDistanceToNow } from "date-fns";
@@ -30,29 +30,26 @@ export default {
 		const documents = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
-		const sliceNumber = ref(10);
-		const user = computed(() => store.getters.getUser);
-		const currentUser = computed(email => {
-			if (email === user.value.email) {
-				return true;
-			} else return false;
-		});
 
-		const handleScroll = () => {
-			if (messages.value.scrollTop <= 10) {
-				store.dispatch("messageCollection/toggleIsScroll", false);
-				sliceNumber.value += 5;
-			}
-		};
+		const user = computed(() => store.getters.getUser);
 
 		// Firestore snapshot
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
 
 		const unsub = collectionRef.onSnapshot(
 			snap => {
+				let i = 0;
+				let size = snap.size;
+				let sizeToDelete = size - 50;
+
 				let results = [];
-				snap.docs.forEach(doc => {
+				snap.docs.forEach(async doc => {
 					doc.data().createdAt && results.push({ ...doc.data(), id: doc.id });
+
+					if (i < sizeToDelete) {
+						await doc.ref.delete();
+					}
+					i++;
 				});
 
 				documents.value = results;
@@ -66,24 +63,10 @@ export default {
 
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
-				if (documents.value.length >= 10) {
-					let start = documents.value.length - sliceNumber.value;
-					let end = documents.value.length;
-
-					if (start < 0) {
-						start = 0;
-						end = documents.value.length;
-					}
-
-					return documents.value.slice(start, end).map(doc => {
-						let time = formatDistanceToNow(doc.createdAt.toDate());
-						return { ...doc, createdAt: time };
-					});
-				} else
-					return documents.value.map(doc => {
-						let time = formatDistanceToNow(doc.createdAt.toDate());
-						return { ...doc, createdAt: time };
-					});
+				return documents.value.map(doc => {
+					let time = formatDistanceToNow(doc.createdAt.toDate());
+					return { ...doc, createdAt: time };
+				});
 			}
 		});
 
@@ -99,7 +82,7 @@ export default {
 			}
 		});
 
-		return { documents, error, formattedDocuments, messages, handleScroll, user, currentUser };
+		return { documents, error, formattedDocuments, messages, user };
 	},
 };
 </script>
@@ -129,6 +112,7 @@ export default {
 }
 .currentUser {
 	text-align: right;
+	margin-right: 2rem;
 }
 span {
 	margin: 0.5rem 0;
