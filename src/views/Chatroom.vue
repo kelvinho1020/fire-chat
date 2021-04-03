@@ -11,7 +11,7 @@ import Navbar from "../components/Navbar";
 import NewChatForm from "../components/NewChatForm";
 import ChatWindow from "../components/ChatWindow";
 export default {
-	components: { Navbar, NewChatForm, ChatWindow },
+	components: { Navbar, NewChatForm, ChatWindow},
 	setup() {},
 };
 </script>

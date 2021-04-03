@@ -31,6 +31,7 @@ export default {
 					name: user.value.displayName,
 					message: message.value,
 					createdAt: timestamp(),
+					email: user.value.email,
 				};
 				message.value = "";
 				await store.dispatch("messageCollection/addDoc", chat);

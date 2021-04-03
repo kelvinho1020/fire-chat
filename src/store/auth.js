@@ -25,6 +25,7 @@ export default {
 				}
 
 				await res.user.updateProfile({ displayName: payload.displayName });
+				context.dispatch("userDetect");
 			} catch (err) {
 				throw new Error(err.message);
 			}
@@ -52,9 +53,6 @@ export default {
 		},
 		userDetect(context) {
 			let user = projectAuth.currentUser;
-			// projectAuth.onAuthStateChanged(_user => {
-			// 	user = _user;
-			// });
 			context.commit("setUser", { user });
 		},
 	},

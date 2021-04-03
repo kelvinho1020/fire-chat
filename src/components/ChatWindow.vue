@@ -1,8 +1,13 @@
 <template>
 	<div class="chat-window" @scroll.capture="handleScroll">
 		<p v-if="error">{{ error }}</p>
-		<div class="messages" v-if="formattedDocuments" ref="messages">
-			<div class="single" v-for="message in formattedDocuments" :key="message.id">
+		<div class="messages" v-if="formattedDocuments && user" ref="messages">
+			<div
+				class="single"
+				v-for="message in formattedDocuments"
+				:class="message.email === user.email ? 'currentUser' : ''"
+				:key="message.id"
+			>
 				<span class="created-at">{{ message.createdAt }}</span>
 				<span class="name">{{ message.name }}</span>
 				<span class="message">{{ message.message }}</span>
@@ -26,6 +31,12 @@ export default {
 		const error = ref(null);
 		const messages = ref(null);
 		const sliceNumber = ref(10);
+		const user = computed(() => store.getters.getUser);
+		const currentUser = computed(email => {
+			if (email === user.value.email) {
+				return true;
+			} else return false;
+		});
 
 		const handleScroll = () => {
 			if (messages.value.scrollTop <= 10) {
@@ -34,6 +45,7 @@ export default {
 			}
 		};
 
+		// Firestore snapshot
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
 
 		const unsub = collectionRef.onSnapshot(
@@ -81,13 +93,13 @@ export default {
 
 		// aut-scroll
 		onUpdated(() => {
-			if (store.getters["messageCollection/getIsScroll"]) {
+			if (store.getters["messageCollection/getIsScroll"] && user.value) {
 				messages.value.scrollTop = messages.value.scrollHeight;
-				console.log(documents.value)
+				console.log(documents.value);
 			}
 		});
 
-		return { documents, error, formattedDocuments, messages, handleScroll };
+		return { documents, error, formattedDocuments, messages, handleScroll, user, currentUser };
 	},
 };
 </script>
@@ -109,9 +121,16 @@ export default {
 .name {
 	font-weight: bold;
 	margin-right: 6px;
+	display: block;
 }
 .messages {
 	max-height: 40rem;
 	overflow: auto;
+}
+.currentUser {
+	text-align: right;
+}
+span {
+	margin: 0.5rem 0;
 }
 </style>
