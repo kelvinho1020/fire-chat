@@ -26,6 +26,7 @@ export default {
 		const handleSubmit = async () => {
 			error.value = "";
 			try {
+				store.dispatch("messageCollection/toggleIsScroll", true);
 				const chat = {
 					name: user.value.displayName,
 					message: message.value,

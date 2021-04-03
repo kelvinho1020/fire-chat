@@ -56,7 +56,6 @@ export default {
 			// 	user = _user;
 			// });
 			context.commit("setUser", { user });
-			console.log("detected");
 		},
 	},
 	getters: {

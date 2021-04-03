@@ -4,11 +4,15 @@ export default {
 	state() {
 		return {
 			message: [],
+			isScroll: true,
 		};
 	},
 	mutations: {
 		setMessage(state, payload) {
 			state.message = payload;
+		},
+		setIsScroll(state, payload) {
+			state.isScroll = payload;
 		},
 	},
 	actions: {
@@ -19,10 +23,16 @@ export default {
 				throw new Error("Could not send the message");
 			}
 		},
+		toggleIsScroll(context, payload) {
+			context.commit("setIsScroll", payload);
+		},
 	},
 	getters: {
 		getMessage(state) {
 			return state.message;
+		},
+		getIsScroll(state) {
+			return state.isScroll;
 		},
 	},
 };

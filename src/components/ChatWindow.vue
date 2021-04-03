@@ -14,34 +14,25 @@
 <script>
 import { computed, ref, onUpdated, watchEffect, onBeforeMount, onMounted, watch } from "vue";
 import { projectFirestore } from "../firebase/config";
+import { useStore } from "vuex";
 import { formatDistanceToNow } from "date-fns";
 
 export default {
 	setup() {
+		// Vue stuff
+		const store = useStore();
+
 		const documents = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
 		const sliceNumber = ref(10);
 
 		const handleScroll = () => {
-			if (messages.value.scrollTop <= 5) {
+			if (messages.value.scrollTop <= 10) {
+				store.dispatch("messageCollection/toggleIsScroll", false);
 				sliceNumber.value += 5;
 			}
 		};
-
-		const formattedDocuments = computed(() => {
-			if (documents.value) {
-				if (documents.value.length >= 10) {
-					let start = documents.value.length - sliceNumber.value;
-					let end = documents.value.length;
-					console.log(start, end);
-					return documents.value.slice(start, end).map(doc => {
-						let time = formatDistanceToNow(doc.createdAt.toDate());
-						return { ...doc, createdAt: time };
-					});
-				}
-			}
-		});
 
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
 
@@ -61,16 +52,42 @@ export default {
 			}
 		);
 
+		const formattedDocuments = computed(() => {
+			if (documents.value) {
+				if (documents.value.length >= 10) {
+					let start = documents.value.length - sliceNumber.value;
+					let end = documents.value.length;
+
+					if (start < 0) {
+						start = 0;
+						end = documents.value.length;
+					}
+
+					return documents.value.slice(start, end).map(doc => {
+						let time = formatDistanceToNow(doc.createdAt.toDate());
+						return { ...doc, createdAt: time };
+					});
+				} else
+					return documents.value.map(doc => {
+						let time = formatDistanceToNow(doc.createdAt.toDate());
+						return { ...doc, createdAt: time };
+					});
+			}
+		});
+
 		watchEffect(onInvalidate => {
 			onInvalidate(() => unsub());
 		});
 
 		// aut-scroll
 		onUpdated(() => {
-			messages.value.scrollTop = messages.value.scrollHeight;
+			if (store.getters["messageCollection/getIsScroll"]) {
+				messages.value.scrollTop = messages.value.scrollHeight;
+				console.log(documents.value)
+			}
 		});
 
-		return { documents, error, formattedDocuments, messages, handleScroll};
+		return { documents, error, formattedDocuments, messages, handleScroll };
 	},
 };
 </script>
