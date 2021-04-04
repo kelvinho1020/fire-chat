@@ -1,8 +1,10 @@
 <template>
-	<div>
+	<div class="outer">
+		<div class="container currentUser">
+			<CurrentUser />
+		</div>
 		<div class="container">
 			<Navbar />
-			<CurrentUser />
 			<ChatWindow />
 			<NewChatForm />
 		</div>
@@ -20,5 +22,19 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.outer {
+	display: flex;
+	justify-content: center;
+
+	& .container {
+		margin-left: 0rem;
+		margin-right: 0rem;
+	}
+
+	.currentUser {
+		width: 10rem;
+		margin-right: 5rem;
+	}
+}
 </style>

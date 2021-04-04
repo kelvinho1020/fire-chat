@@ -14,8 +14,6 @@ export default {
 		const store = useStore();
 		const userId = projectAuth.currentUser.uid;
 
-		console.log(userId);
-
 		projectAuth.onAuthStateChanged(_user => {
 			store.dispatch("userDetect");
 		});

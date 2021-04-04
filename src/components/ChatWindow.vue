@@ -8,6 +8,7 @@
 				:class="message.email === user.email ? 'currentUser' : ''"
 				:key="message.id"
 			>
+				<img src="../assets/img/51ejYd9HbRL._SX425_.jpg" />
 				<span class="created-at">{{ message.createdAt }}</span>
 				<span class="name">{{ message.name }}</span>
 				<span class="message">{{ message.message }}</span>
@@ -93,6 +94,13 @@ export default {
 }
 .single {
 	margin: 1.8rem 0;
+
+	& img {
+		width: 6rem;
+		border-radius: 50px;
+		float: left;
+		margin: 0 2rem;
+	}
 }
 .created-at {
 	display: block;
@@ -112,6 +120,12 @@ export default {
 .currentUser {
 	text-align: right;
 	margin-right: 2rem;
+
+		& img {
+		width: 6rem;
+		border-radius: 50px;
+		float: right;
+	}
 }
 span {
 	margin: 0.5rem 0;

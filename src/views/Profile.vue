@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<form>
+		<form @submit.prevent="handleSubmit">
 			<h2>Update Profile</h2>
 			<div class="profile">
 				<label>
@@ -8,17 +8,40 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<label>Name</label>
-				<input type="text" class="name" placeholder="your new display name" />
+				<label>Display Name</label>
+				<input type="text" class="name" placeholder="update your display name" v-model="name" />
 			</div>
 			<button>Save</button>
-			<button>Back</button>
+			<router-link :to="{ name: 'Chatroom' }"><button type="button">Back</button></router-link>
 		</form>
 	</div>
 </template>
 
 <script>
-export default {};
+import { computed, ref, onUpdated, watchEffect } from "vue";
+import { projectAuth, projectFirestore } from "../firebase/config";
+import { useRouter } from "vue-router";
+export default {
+	props: ["id"],
+	setup(props) {
+		const name = ref("");
+		const router = useRouter();
+
+		const handleSubmit = async () => {
+			await projectAuth.currentUser.updateProfile({
+				displayName: name.value,
+			});
+			await projectFirestore
+				.collection("user")
+				.doc(props.id)
+				.update({ displayName: name.value });
+
+			router.push({ name: "Chatroom" });
+		};
+
+		return { name, handleSubmit };
+	},
+};
 </script>
 
 <style lang="scss" scoped>

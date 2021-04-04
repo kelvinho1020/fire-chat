@@ -1,8 +1,12 @@
 <template>
 	<nav v-if="user">
 		<div>
+			<img src="../assets/img/51ejYd9HbRL._SX425_.jpg" />
 			<p>Hey there {{ user.displayName }} !</p>
-			<p class="email">Currently logged in as {{ user.email }}</p>
+			<p class="email">
+				Currently logged in as {{ user.email }}
+				<router-link :to="{ name: 'Profile', params: { id: user.uid } }">TEST</router-link>
+			</p>
 		</div>
 		<button @click="handleClick">Logout</button>
 	</nav>
@@ -42,6 +46,13 @@ nav {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
+	& img {
+		width: 6rem;
+		border-radius: 50px;
+		float: left;
+		margin-right: 2rem;
+	}
 
 	& p {
 		margin: 2px auto;

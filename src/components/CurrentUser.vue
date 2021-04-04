@@ -1,8 +1,11 @@
 <template>
 	<div class="current-user">
-		<div class="title">Online User :</div>
-		<div v-for="user in documents" :key="user.id">
-			<p>{{ user.displayName }}</p>
+		<div class="title">Online:</div>
+		<div v-for="user in documents" :key="user.id" class="user-container">
+			<div class="single">
+				<img src="../assets/img/51ejYd9HbRL._SX425_.jpg" />
+				<p>{{ user.displayName }}</p>
+			</div>
 		</div>
 	</div>
 </template>
@@ -36,22 +39,34 @@ export default {
 
 <style lang="scss" scoped>
 .current-user {
-	border-bottom: 1px solid #eee;
-	background-color: rgba(241, 240, 240, 0.616);
 	display: flex;
 	align-items: center;
 	padding: 1rem 1rem;
+	flex-wrap: wrap;
+	justify-content: center;
 
 	& .title {
-		padding-left: 1rem;
-		padding-right: 1rem;
+		font-weight: 700;
+		margin: 2rem 0;
+	}
+
+	& .user-container {
+		display: flex;
+		flex-wrap: wrap;
+
+		& img {
+			width: 6rem;
+			border-radius: 50px;
+		}
+	}
+
+	.single {
+		text-align: center;
+		margin: 1rem 0;
 	}
 
 	& p {
 		color: rgb(126, 125, 125);
-		margin: 0 1rem;
-		border-right: 1px solid rgb(211, 211, 211);
-		padding-right: 2rem;
 	}
 }
 </style>
