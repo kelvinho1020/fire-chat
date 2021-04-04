@@ -1,7 +1,7 @@
 <template>
 	<nav v-if="user">
 		<div>
-			<img src="../assets/img/51ejYd9HbRL._SX425_.jpg" />
+			<img :src="photoUrl" />
 			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 export default {
@@ -23,7 +23,10 @@ export default {
 		const router = useRouter();
 
 		// Variables
+		const photoUrl = ref("");
 		const user = computed(() => store.getters.getUser);
+
+		photoUrl.value = user.value.photoURL;
 
 		// Logout
 		const handleClick = async () => {
@@ -34,7 +37,7 @@ export default {
 			}
 		};
 
-		return { handleClick, user };
+		return { handleClick, user, photoUrl };
 	},
 };
 </script>
@@ -49,6 +52,7 @@ nav {
 
 	& img {
 		width: 6rem;
+		height: 6rem;
 		border-radius: 50px;
 		float: left;
 		margin-right: 2rem;

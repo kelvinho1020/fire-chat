@@ -25,7 +25,6 @@ export default {
 				results.push(doc.data());
 			});
 			documents.value = results;
-			console.log(results);
 		});
 
 		watchEffect(onInvalidate => {

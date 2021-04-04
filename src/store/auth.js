@@ -4,11 +4,15 @@ export default {
 	state() {
 		return {
 			user: null,
+			userCollection: null,
 		};
 	},
 	mutations: {
 		setUser(state, payload) {
 			state.user = payload.user;
+		},
+		setUserCollection(state, payload) {
+			state.userCollection = payload;
 		},
 	},
 	actions: {
@@ -23,7 +27,7 @@ export default {
 				await projectFirestore
 					.collection("user")
 					.doc(authRes.user.uid)
-					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid });
+					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid, filePath: "" });
 
 				if (!authRes) {
 					throw new Error("Could not complete the signup");
@@ -61,21 +65,42 @@ export default {
 					.update({ isLogin: false });
 
 				await projectAuth.signOut();
-
 			} catch (err) {
 				throw new Error(err.message);
 			}
 		},
 		userDetect(context) {
 			let user = projectAuth.currentUser;
-			context.commit("setUser", { user });
 
+			context.commit("setUser", { user });
 			console.log("detected");
+			console.log(user.uid);
+
+			const userRef = projectFirestore
+				.collection("user")
+				.doc(user.uid)
+				.get()
+				.then(doc => {
+					if (doc.exists) {
+						console.log("Document data:", doc.data());
+					} else {
+						// doc.data() will be undefined in this case
+						console.log("No such document!");
+					}
+				});
+
+			// const userCollection = await userRef.get();
+			// for (const doc of userCollection.docs) {
+			// 	console.log(doc.id, "=>", doc.data());
+			// }
 		},
 	},
 	getters: {
 		getUser(state) {
 			return state.user;
+		},
+		getUserCollection(state) {
+			return state.userCollection;
 		},
 	},
 };

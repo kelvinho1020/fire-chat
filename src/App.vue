@@ -18,6 +18,10 @@ export default {
 			store.dispatch("userDetect");
 		});
 
+		//////////////////////////////////
+		const userCollection = computed(() => store.getters.getUserCollection);
+		console.log(userCollection.value);
+
 		const login = async () => {
 			await projectFirestore
 				.collection("user")

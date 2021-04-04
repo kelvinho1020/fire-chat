@@ -3,10 +3,11 @@
 		<form @submit.prevent="handleSubmit">
 			<h2>Update Profile</h2>
 			<div class="profile">
-				<label>
-					<input type="file" />
-				</label>
+				<img :src="tempUrl" />
 			</div>
+			<label>
+				<input type="file" @change="handleChange" />
+			</label>
 			<div class="form-group">
 				<label>Display Name</label>
 				<input type="text" class="name" placeholder="update your display name" v-model="name" />
@@ -19,27 +20,63 @@
 
 <script>
 import { computed, ref, onUpdated, watchEffect } from "vue";
-import { projectAuth, projectFirestore } from "../firebase/config";
+import { projectAuth, projectFirestore, projectStorage } from "../firebase/config";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 export default {
 	props: ["id"],
 	setup(props) {
-		const name = ref("");
 		const router = useRouter();
+		const file = ref(null);
+		const name = ref("");
+		const url = ref("");
+		const tempUrl = ref("");
+
+		////////////////////////////////////
+		const store = useStore();
+		const user = computed(() => store.getters.getUser);
+		// let collectionRes = projectFirestore.collection("user").where("id", "==", user.value.id);
+
+		// allowed types
+		const types = ["image/png", "image/jpeg"];
+
+		const handleChange = e => {
+			let selected = e.target.files[0];
+			if (selected && types.includes(selected.type)) {
+				file.value = selected;
+				tempUrl.value = URL.createObjectURL(selected);
+				console.log(tempUrl.value);
+			}
+		};
 
 		const handleSubmit = async () => {
+			// Profile picture
+			let filePath = `users/${props.id}/${file.value.name}`;
+			const storageRef = projectStorage.ref(filePath);
+
+			const res = await storageRef.put(file.value);
+			url.value = await res.ref.getDownloadURL();
+
+			await projectFirestore
+				.collection("user")
+				.doc(props.id)
+				.update({ url: url.value });
+
+			// Displayname
 			await projectAuth.currentUser.updateProfile({
 				displayName: name.value,
+				photoURL: url.value,
 			});
 			await projectFirestore
 				.collection("user")
 				.doc(props.id)
-				.update({ displayName: name.value });
+				.update({ displayName: name.value, filePath: filePath });
 
+			console.log(url.value);
 			router.push({ name: "Chatroom" });
 		};
 
-		return { name, handleSubmit };
+		return { name, handleSubmit, handleChange, tempUrl };
 	},
 };
 </script>
@@ -54,9 +91,14 @@ export default {
 		margin: 20px auto;
 		width: 150px;
 		height: 150px;
-		background-color: royalblue;
 		position: relative;
 		border-radius: 0.6rem;
+		background-color: royalblue;
+		overflow: hidden;
+
+		img {
+			width: 100%;
+		}
 	}
 
 	& h2 {
@@ -73,7 +115,7 @@ export default {
 		margin: 2rem 0 0.1rem;
 	}
 
-	& input {
+	& .name {
 		width: 100%;
 		padding: 1rem;
 		border-radius: 2rem;
