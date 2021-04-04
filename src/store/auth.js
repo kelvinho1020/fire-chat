@@ -1,4 +1,5 @@
 import { projectAuth } from "../firebase/config";
+import { projectFirestore } from "../firebase/config";
 export default {
 	state() {
 		return {
@@ -17,46 +18,59 @@ export default {
 					throw new Error("Please enter valid email and display name!");
 				}
 
-				const res = await projectAuth.createUserWithEmailAndPassword(payload.email, payload.password);
+				const authRes = await projectAuth.createUserWithEmailAndPassword(payload.email, payload.password);
 
-				context.dispatch("userDetect");
-				if (!res) {
+				await projectFirestore
+					.collection("user")
+					.doc(authRes.user.uid)
+					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid });
+
+				if (!authRes) {
 					throw new Error("Could not complete the signup");
 				}
 
-				await res.user.updateProfile({ displayName: payload.displayName });
-				context.dispatch("userDetect");
+				await authRes.user.updateProfile({ displayName: payload.displayName });
 			} catch (err) {
 				throw new Error(err.message);
 			}
 		},
 		async login(context, payload) {
 			try {
-				const res = await projectAuth.signInWithEmailAndPassword(payload.email, payload.password);
+				const authRes = await projectAuth.signInWithEmailAndPassword(payload.email, payload.password);
+				const userId = context.getters.getUser.uid;
 
-				if (!res) {
+				await projectFirestore
+					.collection("user")
+					.doc(userId)
+					.update({ isLogin: true });
+
+				if (!authRes) {
 					throw new Error("Could not login");
 				}
-
-				context.dispatch("userDetect");
 			} catch (err) {
 				throw new Error(err.message);
 			}
 		},
 		async logout(context) {
 			try {
+				const userId = context.getters.getUser.uid;
+
+				await projectFirestore
+					.collection("user")
+					.doc(userId)
+					.update({ isLogin: false });
+
 				await projectAuth.signOut();
-				context.dispatch("userDetect");
+
 			} catch (err) {
 				throw new Error(err.message);
 			}
 		},
-		userDetect(context, payload) {
+		userDetect(context) {
 			let user = projectAuth.currentUser;
-			// projectAuth.onAuthStateChanged(_user => {
-			// 	user = _user;
-			// });
-			context.commit("setUser", payload ? { payload } : { user });
+			context.commit("setUser", { user });
+
+			console.log("detected");
 		},
 	},
 	getters: {

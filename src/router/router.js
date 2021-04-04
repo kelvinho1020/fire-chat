@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Welcome from "../views/Welcome.vue";
 import Chatroom from "../views/Chatroom.vue";
+import Profile from "../views/Profile.vue";
 import { projectAuth } from "../firebase/config";
 
 const requireAuth = (to, form, next) => {
@@ -30,6 +31,12 @@ const routes = [
 		component: Chatroom,
 		beforeEnter: requireAuth,
 	},
+	{
+		path: "/profile",
+		name: "Profile",
+		component: Profile,
+		beforeEnter: requireAuth,
+	}
 ];
 
 const router = createRouter({

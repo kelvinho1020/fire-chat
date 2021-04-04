@@ -78,7 +78,6 @@ export default {
 		onUpdated(() => {
 			if (store.getters["messageCollection/getIsScroll"] && user.value) {
 				messages.value.scrollTop = messages.value.scrollHeight;
-				console.log(documents.value);
 			}
 		});
 
