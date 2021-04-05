@@ -8,7 +8,7 @@
 			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
-				<router-link :to="{ name: 'Profile', params: { id: user.uid } }">TEST</router-link>
+				<router-link :to="{ name: 'Profile', params: { id: user.uid } }"><font-awesome-icon icon="pen" style="color:#777"/></router-link>
 			</p>
 		</div>
 		<button @click="handleClick">Logout</button>
@@ -52,6 +52,9 @@ nav {
 	justify-content: space-between;
 	align-items: center;
 
+	& a{
+		margin-left: .5rem;
+	}
 	& .cover {
 		margin-right: 2rem;
 	}

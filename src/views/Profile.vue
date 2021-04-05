@@ -4,10 +4,11 @@
 			<h2>Update Profile</h2>
 			<div class="profile">
 				<img :src="tempUrl" />
+				<label for="photo" class="photo">
+					<font-awesome-icon icon="pen" style="color: white" />
+					<input id="photo" type="file" @change="handleChange" />
+				</label>
 			</div>
-			<label>
-				<input type="file" @change="handleChange" />
-			</label>
 			<div class="form-group">
 				<label>Display Name</label>
 				<input type="text" class="name" placeholder="update your display name" v-model="name" />
@@ -115,6 +116,19 @@ export default {
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+		}
+
+		& .photo {
+			cursor: pointer;
+			position: absolute;
+			bottom: 0;
+			right: 45%;
+		}
+
+		& #photo {
+			visibility: hidden;
+			position: absolute;
+			right: 50%;
 		}
 	}
 

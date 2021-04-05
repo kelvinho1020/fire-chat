@@ -25,7 +25,7 @@ export default {
 
 		const user = computed(() => store.getters.getUser);
 		photoUrl.value = user.value.photoURL;
-		
+
 		const handleSubmit = async () => {
 			error.value = "";
 			try {
