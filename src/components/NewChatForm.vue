@@ -24,7 +24,9 @@ export default {
 		const photoUrl = ref("");
 
 		const user = computed(() => store.getters.getUser);
-		photoUrl.value = user.value.photoURL;
+		if (user.value) {
+			photoUrl.value = user.value.photoURL;
+		}
 
 		const handleSubmit = async () => {
 			error.value = "";

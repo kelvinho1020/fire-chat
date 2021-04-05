@@ -32,7 +32,6 @@ export default {
 					.doc(authRes.user.uid)
 					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid, filePath: "" });
 
-
 				await authRes.user.updateProfile({ displayName: payload.displayName });
 			} catch (err) {
 				throw new Error(err.message);
@@ -75,15 +74,18 @@ export default {
 
 			context.commit("setUser", { user });
 			console.log("detected");
+			try {
+				if (user) {
+					const userRef = await projectFirestore
+						.collection("user")
+						.doc(user.uid)
+						.get();
 
-			if (user) {
-				const userRef = await projectFirestore
-					.collection("user")
-					.doc(user.uid)
-					.get();
-
-				const userCollection = userRef.data();
-				context.commit("setUserCollection", userCollection);
+					const userCollection = userRef.data();
+					context.commit("setUserCollection", userCollection);
+				}
+			} catch (err) {
+				throw new Error(err.message);
 			}
 		},
 	},

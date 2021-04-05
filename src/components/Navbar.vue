@@ -8,7 +8,9 @@
 			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
-				<router-link :to="{ name: 'Profile', params: { id: user.uid } }"><font-awesome-icon icon="pen" style="color:#777"/></router-link>
+				<router-link :to="{ name: 'Profile', params: { id: user.uid } }"
+					><font-awesome-icon icon="pen" style="color:#777"
+				/></router-link>
 			</p>
 		</div>
 		<button @click="handleClick">Logout</button>
@@ -28,7 +30,9 @@ export default {
 		// Variables
 		const photoUrl = ref("");
 		const user = computed(() => store.getters.getUser);
-		photoUrl.value = user.value.photoURL;
+		if (user.value) {
+			photoUrl.value = user.value.photoURL;
+		}
 
 		// Logout
 		const handleClick = async () => {
@@ -52,8 +56,8 @@ nav {
 	justify-content: space-between;
 	align-items: center;
 
-	& a{
-		margin-left: .5rem;
+	& a {
+		margin-left: 0.5rem;
 	}
 	& .cover {
 		margin-right: 2rem;

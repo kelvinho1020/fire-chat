@@ -80,7 +80,9 @@ export default {
 
 		// aut-scroll
 		onUpdated(() => {
-			messages.value.scrollTop = messages.value.scrollHeight;
+			if (messages.value) {
+				messages.value.scrollTop = messages.value.scrollHeight;
+			}
 		});
 
 		return { documents, error, formattedDocuments, messages, user };

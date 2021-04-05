@@ -13,6 +13,7 @@
 				<label>Display Name</label>
 				<input type="text" class="name" placeholder="update your display name" v-model="name" />
 			</div>
+			<p class="error" v-if="error">{{ error }}</p>
 			<button>Save</button>
 			<router-link :to="{ name: 'Chatroom' }"><button type="button">Back</button></router-link>
 		</form>
@@ -36,6 +37,7 @@ export default {
 		const name = ref("");
 		const url = ref("");
 		const tempUrl = ref("");
+		const error = ref(null);
 
 		// allowed types
 		const types = ["image/png", "image/jpeg"];
@@ -85,11 +87,11 @@ export default {
 
 				router.push({ name: "Chatroom" });
 			} catch (err) {
-				console.log(err.message);
+				err.value = err.message;
 			}
 		};
 
-		return { name, handleSubmit, handleChange, tempUrl };
+		return { name, handleSubmit, handleChange, tempUrl, error };
 	},
 };
 </script>
