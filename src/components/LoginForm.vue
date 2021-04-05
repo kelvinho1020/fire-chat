@@ -33,6 +33,7 @@ export default {
 				});
 				context.emit("login");
 			} catch (err) {
+				console.log(err)
 				formIsValid.value = false;
 				error.value = err.message;
 			}

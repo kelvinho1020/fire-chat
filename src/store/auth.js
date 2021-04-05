@@ -23,15 +23,15 @@ export default {
 				}
 
 				const authRes = await projectAuth.createUserWithEmailAndPassword(payload.email, payload.password);
+				if (!authRes) {
+					throw new Error("Could not complete the signup");
+				}
 
 				await projectFirestore
 					.collection("user")
 					.doc(authRes.user.uid)
 					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid, filePath: "" });
 
-				if (!authRes) {
-					throw new Error("Could not complete the signup");
-				}
 
 				await authRes.user.updateProfile({ displayName: payload.displayName });
 			} catch (err) {
@@ -41,15 +41,16 @@ export default {
 		async login(context, payload) {
 			try {
 				const authRes = await projectAuth.signInWithEmailAndPassword(payload.email, payload.password);
-				const userId = context.getters.getUser.uid;
-
-				await projectFirestore
-					.collection("user")
-					.doc(userId)
-					.update({ isLogin: true });
-
 				if (!authRes) {
 					throw new Error("Could not login");
+				}
+
+				if (projectAuth.currentUser) {
+					const userId = projectAuth.currentUser.uid;
+					await projectFirestore
+						.collection("user")
+						.doc(userId)
+						.update({ isLogin: true });
 				}
 			} catch (err) {
 				throw new Error(err.message);
@@ -69,30 +70,21 @@ export default {
 				throw new Error(err.message);
 			}
 		},
-		userDetect(context) {
+		async userDetect(context) {
 			let user = projectAuth.currentUser;
 
 			context.commit("setUser", { user });
 			console.log("detected");
-			console.log(user.uid);
 
-			const userRef = projectFirestore
-				.collection("user")
-				.doc(user.uid)
-				.get()
-				.then(doc => {
-					if (doc.exists) {
-						console.log("Document data:", doc.data());
-					} else {
-						// doc.data() will be undefined in this case
-						console.log("No such document!");
-					}
-				});
+			if (user) {
+				const userRef = await projectFirestore
+					.collection("user")
+					.doc(user.uid)
+					.get();
 
-			// const userCollection = await userRef.get();
-			// for (const doc of userCollection.docs) {
-			// 	console.log(doc.id, "=>", doc.data());
-			// }
+				const userCollection = userRef.data();
+				context.commit("setUserCollection", userCollection);
+			}
 		},
 	},
 	getters: {

@@ -21,23 +21,25 @@ export default {
 		// Variables
 		const message = ref("");
 		const error = ref("");
-		const user = computed(() => store.getters.getUser);
+		const photoUrl = ref("");
 
+		const user = computed(() => store.getters.getUser);
+		photoUrl.value = user.value.photoURL;
+		
 		const handleSubmit = async () => {
 			error.value = "";
 			try {
-				store.dispatch("messageCollection/toggleIsScroll", true);
 				const chat = {
 					name: user.value.displayName,
 					message: message.value,
 					createdAt: timestamp(),
 					email: user.value.email,
+					url: photoUrl.value,
 				};
 				message.value = "";
 				await store.dispatch("messageCollection/addDoc", chat);
 			} catch (err) {
-				console.log(err.message);
-				err.value = err.message;
+				error.value = err.message;
 			}
 		};
 

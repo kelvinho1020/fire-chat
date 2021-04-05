@@ -1,6 +1,5 @@
 <template>
 	<div class="chat-window">
-		<p v-if="error">{{ error }}</p>
 		<div class="messages" v-if="formattedDocuments && user" ref="messages">
 			<div
 				class="single"
@@ -8,7 +7,10 @@
 				:class="message.email === user.email ? 'currentUser' : ''"
 				:key="message.id"
 			>
-				<img src="../assets/img/51ejYd9HbRL._SX425_.jpg" />
+				<div class="cover">
+					<img class="icon" :src="message.url" v-if="message.url" />
+					<img class="icon" src="../assets/img/user.png" v-else />
+				</div>
 				<span class="created-at">{{ message.createdAt }}</span>
 				<span class="name">{{ message.name }}</span>
 				<span class="message">{{ message.message }}</span>
@@ -62,6 +64,7 @@ export default {
 			}
 		);
 
+		// Fromat the timestamp
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
 				return documents.value.map(doc => {
@@ -77,9 +80,7 @@ export default {
 
 		// aut-scroll
 		onUpdated(() => {
-			if (store.getters["messageCollection/getIsScroll"] && user.value) {
-				messages.value.scrollTop = messages.value.scrollHeight;
-			}
+			messages.value.scrollTop = messages.value.scrollHeight;
 		});
 
 		return { documents, error, formattedDocuments, messages, user };
@@ -93,14 +94,10 @@ export default {
 	padding: 3rem 2rem;
 }
 .single {
-	margin: 1.8rem 0;
-
-	& img {
-		width: 6rem;
-		border-radius: 50px;
-		float: left;
-		margin: 0 2rem;
-	}
+	margin: 1.8rem 0 1.8rem 1.3rem;
+}
+.cover {
+	margin-right: 2rem;
 }
 .created-at {
 	display: block;
@@ -119,11 +116,10 @@ export default {
 }
 .currentUser {
 	text-align: right;
-	margin-right: 2rem;
+	margin-right: 1.5rem;
 
-		& img {
-		width: 6rem;
-		border-radius: 50px;
+	.cover {
+		margin-left: 2rem;
 		float: right;
 	}
 }

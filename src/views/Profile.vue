@@ -19,26 +19,28 @@
 </template>
 
 <script>
-import { computed, ref, onUpdated, watchEffect } from "vue";
+import { computed, ref } from "vue";
 import { projectAuth, projectFirestore, projectStorage } from "../firebase/config";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 export default {
 	props: ["id"],
 	setup(props) {
+		// Vue stuff
 		const router = useRouter();
+		const store = useStore();
+
+		// Variables
 		const file = ref(null);
 		const name = ref("");
 		const url = ref("");
 		const tempUrl = ref("");
 
-		////////////////////////////////////
-		const store = useStore();
-		const user = computed(() => store.getters.getUser);
-		// let collectionRes = projectFirestore.collection("user").where("id", "==", user.value.id);
-
 		// allowed types
 		const types = ["image/png", "image/jpeg"];
+
+		// Vue store
+		const userCollection = computed(() => store.getters.getUserCollection);
 
 		const handleChange = e => {
 			let selected = e.target.files[0];
@@ -54,26 +56,36 @@ export default {
 			let filePath = `users/${props.id}/${file.value.name}`;
 			const storageRef = projectStorage.ref(filePath);
 
-			const res = await storageRef.put(file.value);
-			url.value = await res.ref.getDownloadURL();
+			try {
+				// Update FireStorage
+				const res = await storageRef.put(file.value);
+				url.value = await res.ref.getDownloadURL();
 
-			await projectFirestore
-				.collection("user")
-				.doc(props.id)
-				.update({ url: url.value });
+				// Delete FireStorage
+				if (userCollection.value.url !== "") {
+					const storageRef = projectStorage.ref(userCollection.value.filePath);
+					await storageRef.delete();
+				}
 
-			// Displayname
-			await projectAuth.currentUser.updateProfile({
-				displayName: name.value,
-				photoURL: url.value,
-			});
-			await projectFirestore
-				.collection("user")
-				.doc(props.id)
-				.update({ displayName: name.value, filePath: filePath });
+				// Update Auth profile
+				await projectAuth.currentUser.updateProfile({
+					displayName: name.value,
+					photoURL: url.value,
+				});
 
-			console.log(url.value);
-			router.push({ name: "Chatroom" });
+				// Update User collection
+				await projectFirestore
+					.collection("user")
+					.doc(props.id)
+					.update({ displayName: name.value, filePath: filePath, url: url.value });
+
+				// Update store
+				store.dispatch("userDetect");
+
+				router.push({ name: "Chatroom" });
+			} catch (err) {
+				console.log(err.message);
+			}
 		};
 
 		return { name, handleSubmit, handleChange, tempUrl };
@@ -92,12 +104,17 @@ export default {
 		width: 150px;
 		height: 150px;
 		position: relative;
-		border-radius: 0.6rem;
+		border-radius: 100px;
 		background-color: royalblue;
 		overflow: hidden;
 
 		img {
-			width: 100%;
+			max-width: 300px;
+			max-height: 300px;
+			position: relative;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 		}
 	}
 

@@ -1,7 +1,10 @@
 <template>
 	<nav v-if="user">
 		<div>
-			<img :src="photoUrl" />
+			<div class="cover">
+				<img class="icon" :src="photoUrl" v-if="photoUrl" />
+				<img class="icon" src="../assets/img/user.png" v-else />
+			</div>
 			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
@@ -25,7 +28,6 @@ export default {
 		// Variables
 		const photoUrl = ref("");
 		const user = computed(() => store.getters.getUser);
-
 		photoUrl.value = user.value.photoURL;
 
 		// Logout
@@ -50,11 +52,7 @@ nav {
 	justify-content: space-between;
 	align-items: center;
 
-	& img {
-		width: 6rem;
-		height: 6rem;
-		border-radius: 50px;
-		float: left;
+	& .cover {
 		margin-right: 2rem;
 	}
 

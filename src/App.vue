@@ -5,40 +5,39 @@
 </template>
 
 <script>
-import { computed, onMounted, onUpdated } from "vue";
+import { onMounted } from "vue";
 import { useStore } from "vuex";
 import { projectAuth, projectFirestore } from "./firebase/config";
 
 export default {
 	setup() {
 		const store = useStore();
-		const userId = projectAuth.currentUser.uid;
 
-		projectAuth.onAuthStateChanged(_user => {
-			store.dispatch("userDetect");
-		});
+		if (projectAuth.currentUser) {
+			const userId = projectAuth.currentUser.uid;
 
-		//////////////////////////////////
-		const userCollection = computed(() => store.getters.getUserCollection);
-		console.log(userCollection.value);
+			projectAuth.onAuthStateChanged(_user => {
+				store.dispatch("userDetect");
+			});
 
-		const login = async () => {
-			await projectFirestore
-				.collection("user")
-				.doc(userId)
-				.update({ isLogin: true });
-		};
-		const logout = async () => {
-			await projectFirestore
-				.collection("user")
-				.doc(userId)
-				.update({ isLogin: false });
-		};
+			const login = async () => {
+				await projectFirestore
+					.collection("user")
+					.doc(userId)
+					.update({ isLogin: true });
+			};
+			const logout = async () => {
+				await projectFirestore
+					.collection("user")
+					.doc(userId)
+					.update({ isLogin: false });
+			};
 
-		onMounted(() => {
-			login();
-		});
-		window.addEventListener("beforeunload", logout);
+			onMounted(() => {
+				login();
+			});
+			window.addEventListener("beforeunload", logout);
+		}
 	},
 };
 </script>
