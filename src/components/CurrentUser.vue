@@ -4,10 +4,12 @@
 		<div v-for="user in status" :key="user.id" class="user-container">
 			<div class="single">
 				<div class="status" :class="user.status"></div>
-				<div class="cover">
+				<router-link :to="{ name: 'Profile', params: { id: user.id } } ">
+					<div class="cover">
 					<img class="icon" :src="user.photoURL" v-if="user.photoURL" />
 					<img class="icon" src="../assets/img/user.png" v-else />
 				</div>
+				</router-link>
 				<p>{{ user.displayName }}</p>
 			</div>
 		</div>
@@ -62,8 +64,6 @@ export default {
 						_user.id = key;
 						status.value.push(_user);
 					}
-
-					console.log("SNAPSHOT");
 				}
 			});
 

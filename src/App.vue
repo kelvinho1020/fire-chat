@@ -11,6 +11,7 @@ import { projectAuth, projectFirestore, projectDatabase } from "./firebase/confi
 import firebase from "firebase/app";
 export default {
 	setup() {
+		const user = projectAuth.currentUser;
 		const store = useStore();
 		projectAuth.onAuthStateChanged(_user => {
 			store.dispatch("userDetect");

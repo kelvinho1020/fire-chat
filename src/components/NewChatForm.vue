@@ -12,7 +12,7 @@
 <script>
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
-import { timestamp } from "../firebase/config";
+import { timestamp, projectAuth, projectFirestore, projectStorage } from "../firebase/config";
 export default {
 	setup() {
 		// Vue stuff
@@ -23,20 +23,21 @@ export default {
 		const error = ref("");
 		const photoUrl = ref("");
 
-		const user = computed(() => store.getters.getUser);
-		if (user.value) {
-			photoUrl.value = user.value.photoURL;
+		const user = projectAuth.currentUser;
+		if (user) {
+			photoUrl.value = user.photoURL;
 		}
 
 		const handleSubmit = async () => {
 			error.value = "";
 			try {
 				const chat = {
-					name: user.value.displayName,
+					name: user.displayName,
 					message: message.value,
 					createdAt: timestamp(),
-					email: user.value.email,
+					email: user.email,
 					url: photoUrl.value,
+					uid: user.uid,
 				};
 				message.value = "";
 				await store.dispatch("messageCollection/addDoc", chat);

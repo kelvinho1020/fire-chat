@@ -12,6 +12,8 @@
 			<div class="form-group">
 				<label>Display Name</label>
 				<input type="text" class="name" placeholder="update your display name" v-model="name" />
+				<label>Description</label>
+				<input type="text" class="description" placeholder="tell about yourself" v-model="description" />
 			</div>
 			<p class="error" v-if="error">{{ error }}</p>
 			<button>Save</button>
@@ -33,10 +35,12 @@ export default {
 		const store = useStore();
 
 		// Variables
+		const user = projectAuth.currentUser;
 		const file = ref(null);
 		const name = ref("");
 		const url = ref("");
 		const tempUrl = ref("");
+		const description = ref("");
 		const error = ref(null);
 
 		// allowed types
@@ -44,31 +48,34 @@ export default {
 
 		// Vue store
 		const userCollection = computed(() => store.getters.getUserCollection);
+		store.dispatch("userDetect");
 
 		const handleChange = e => {
 			let selected = e.target.files[0];
 			if (selected && types.includes(selected.type)) {
 				file.value = selected;
 				tempUrl.value = URL.createObjectURL(selected);
-				console.log(tempUrl.value);
 			}
 		};
 
 		const handleSubmit = async () => {
-			// Profile picture
-			let filePath = `users/${props.id}/${file.value.name}`;
-			const storageRef = projectStorage.ref(filePath);
-
 			try {
+				// Profile picture
+				let filePath = `users/${props.id}/${file.value.name}`;
+				const storageRef = projectStorage.ref(filePath);
+
+				// Delete FireStorage
+				const deleteStorageRef = projectStorage.ref(userCollection.value.filePath);
+				try {
+					await deleteStorageRef.getDownloadURL();
+					await deleteStorageRef.delete();
+				} catch (err) {
+					console.log("do not have this file");
+				}
+				
 				// Update FireStorage
 				const res = await storageRef.put(file.value);
 				url.value = await res.ref.getDownloadURL();
-
-				// Delete FireStorage
-				if (userCollection.value.url !== "") {
-					const storageRef = projectStorage.ref(userCollection.value.filePath);
-					await storageRef.delete();
-				}
 
 				// Update Auth profile
 				await projectAuth.currentUser.updateProfile({
@@ -80,18 +87,19 @@ export default {
 				await projectFirestore
 					.collection("user")
 					.doc(props.id)
-					.update({ displayName: name.value, filePath: filePath, url: url.value });
+					.update({ displayName: name.value, filePath: filePath, url: url.value, description: description.value });
 
 				// Update store
 				store.dispatch("userDetect");
 
 				router.push({ name: "Chatroom" });
 			} catch (err) {
+				console.log(err);
 				err.value = err.message;
 			}
 		};
 
-		return { name, handleSubmit, handleChange, tempUrl, error };
+		return { name, handleSubmit, handleChange, tempUrl, error, description };
 	},
 };
 </script>
@@ -101,6 +109,7 @@ export default {
 	text-align: center;
 	padding: 3.8rem 0;
 	font-size: 1.6rem;
+	width: 100%;
 
 	& .profile {
 		margin: 20px auto;
@@ -139,8 +148,14 @@ export default {
 	}
 
 	& form {
-		width: 30rem;
+		width: 80rem;
 		margin: 2rem auto;
+	}
+
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
 	}
 
 	& label {
@@ -148,7 +163,7 @@ export default {
 		margin: 2rem 0 0.1rem;
 	}
 
-	& .name {
+	& input {
 		width: 100%;
 		padding: 1rem;
 		border-radius: 2rem;
@@ -156,6 +171,14 @@ export default {
 		outline: none;
 		color: var(--grey-light);
 		margin: 1rem auto;
+	}
+
+	& .name {
+		width: 35%;
+	}
+
+	& .description {
+		width: 60%;
 	}
 
 	& button {

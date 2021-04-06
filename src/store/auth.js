@@ -1,5 +1,4 @@
-import { projectAuth } from "../firebase/config";
-import { projectFirestore, projectDatabase } from "../firebase/config";
+import { projectAuth, projectFirestore, projectDatabase } from "../firebase/config";
 export default {
 	state() {
 		return {
@@ -30,7 +29,7 @@ export default {
 				await projectFirestore
 					.collection("user")
 					.doc(authRes.user.uid)
-					.set({ ...payload, url: "", id: authRes.user.uid, filePath: "" });
+					.set({ ...payload, url: "", id: authRes.user.uid, filePath: "", description: "" });
 
 				await authRes.user.updateProfile({ displayName: payload.displayName });
 			} catch (err) {
@@ -62,20 +61,45 @@ export default {
 
 			context.commit("setUser", { user });
 			console.log("detected");
-			try {
-				if (user) {
-					const userRef = await projectFirestore
-						.collection("user")
-						.doc(user.uid)
-						.get();
 
-					const userCollection = userRef.data();
-					context.commit("setUserCollection", userCollection);
-				}
+			try {
+				const userRef = await projectFirestore
+					.collection("user")
+					.doc(user.uid)
+					.get();
+				const userCollection = userRef.data();
+				// console.log(userCollection);
+				context.commit("setUserCollection", userCollection);
 			} catch (err) {
-				throw new Error(err.message);
+				console.log(err.message);
 			}
 		},
+		async userCollectionDetect(context, payload) {
+			try {
+				const userRef = await projectFirestore
+					.collection("user")
+					.doc(payload)
+					.get();
+				const userCollection = userRef.data();
+				context.commit("setUserCollection", userCollection);
+			} catch (err) {
+				console.log(err.message);
+			}
+		},
+		async allUserCollection(context,payload){
+			try {
+				const userRef = await projectFirestore
+					.collection("user")
+					.get();
+
+				console.log(userRef)
+				const userCollection = userRef.data();
+
+				context.commit("setUserCollection", userCollection);
+			} catch (err) {
+				console.log(err.message);
+			}
+		}
 	},
 	getters: {
 		getUser(state) {

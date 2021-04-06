@@ -31,6 +31,7 @@ export default {
 		const store = useStore();
 
 		const documents = ref(null);
+		const userDocuments = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
 
@@ -38,8 +39,27 @@ export default {
 
 		// Firestore snapshot
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
+		let usercollectionRef = projectFirestore.collection("user");
 
-		const unsub = collectionRef.onSnapshot(
+		// UserCollection
+		const unsub1 = usercollectionRef.onSnapshot(
+			snap => {
+				let results = [];
+				snap.docs.forEach(async doc => {
+					results.push({ ...doc.data() });
+				});
+
+				userDocuments.value = results;
+				error.value = null;
+			},
+			err => {
+				documents.value = null;
+				error.value = "could not fetch the data";
+			}
+		);
+
+		// MessageCollection
+		const unsub2 = collectionRef.onSnapshot(
 			snap => {
 				let i = 0;
 				let size = snap.size;
@@ -68,14 +88,16 @@ export default {
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
 				return documents.value.map(doc => {
+					let user = userDocuments.value.find(u => u.id === doc.uid);
 					let time = formatDistanceToNow(doc.createdAt.toDate());
-					return { ...doc, createdAt: time };
+					return { ...doc, createdAt: time, url: user.url };
 				});
 			}
 		});
 
 		watchEffect(onInvalidate => {
-			onInvalidate(() => unsub());
+			onInvalidate(() => unsub1());
+			onInvalidate(() => unsub2());
 		});
 
 		// aut-scroll
