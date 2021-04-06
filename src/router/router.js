@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { projectAuth } from "../firebase/config";
 import Welcome from "../views/Welcome.vue";
 import Chatroom from "../views/Chatroom.vue";
+import Update from "../views/Update.vue";
 import Profile from "../views/Profile.vue";
-import { projectAuth } from "../firebase/config";
 
 const requireAuth = (to, form, next) => {
 	let user = projectAuth.currentUser;
@@ -35,6 +36,13 @@ const routes = [
 		path: "/profile/:id",
 		name: "Profile",
 		component: Profile,
+		beforeEnter: requireAuth,
+		props: true,
+	},
+	{
+		path: "/profile/:id/update",
+		name: "Update",
+		component: Update,
 		beforeEnter: requireAuth,
 		props: true,
 	}

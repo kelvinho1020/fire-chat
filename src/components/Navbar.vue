@@ -8,7 +8,7 @@
 			<p>Hey there {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
-				<router-link :to="{ name: 'Profile', params: { id: user.uid } }"
+				<router-link :to="{ name: 'Update', params: { id: user.uid } }"
 					><font-awesome-icon icon="pen" style="color:#777"
 				/></router-link>
 			</p>
@@ -18,7 +18,8 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { projectAuth } from "../firebase/config";
+import {  ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 export default {
@@ -28,11 +29,10 @@ export default {
 		const router = useRouter();
 
 		// Variables
+		const user = projectAuth.currentUser;
 		const photoUrl = ref("");
-		const user = computed(() => store.getters.getUser);
-		if (user.value) {
-			photoUrl.value = user.value.photoURL;
-		}
+
+		photoUrl.value = user.photoURL;
 
 		// Logout
 		const handleClick = async () => {

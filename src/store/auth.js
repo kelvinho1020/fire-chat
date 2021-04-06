@@ -1,5 +1,5 @@
 import { projectAuth } from "../firebase/config";
-import { projectFirestore } from "../firebase/config";
+import { projectFirestore, projectDatabase } from "../firebase/config";
 export default {
 	state() {
 		return {
@@ -30,7 +30,7 @@ export default {
 				await projectFirestore
 					.collection("user")
 					.doc(authRes.user.uid)
-					.set({ ...payload, isLogin: true, url: "", id: authRes.user.uid, filePath: "" });
+					.set({ ...payload, url: "", id: authRes.user.uid, filePath: "" });
 
 				await authRes.user.updateProfile({ displayName: payload.displayName });
 			} catch (err) {
@@ -43,27 +43,15 @@ export default {
 				if (!authRes) {
 					throw new Error("Could not login");
 				}
-
-				if (projectAuth.currentUser) {
-					const userId = projectAuth.currentUser.uid;
-					await projectFirestore
-						.collection("user")
-						.doc(userId)
-						.update({ isLogin: true });
-				}
 			} catch (err) {
 				throw new Error(err.message);
 			}
 		},
 		async logout(context) {
+			const userId = projectAuth.currentUser.uid;
+			const userRef = projectDatabase.ref("users/" + userId);
+			userRef.remove();
 			try {
-				const userId = context.getters.getUser.uid;
-
-				await projectFirestore
-					.collection("user")
-					.doc(userId)
-					.update({ isLogin: false });
-
 				await projectAuth.signOut();
 			} catch (err) {
 				throw new Error(err.message);

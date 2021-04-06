@@ -7,36 +7,15 @@
 <script>
 import { onMounted } from "vue";
 import { useStore } from "vuex";
-import { projectAuth, projectFirestore } from "./firebase/config";
-
+import { projectAuth, projectFirestore, projectDatabase } from "./firebase/config";
+import firebase from "firebase/app";
 export default {
 	setup() {
 		const store = useStore();
-
+		projectAuth.onAuthStateChanged(_user => {
+			store.dispatch("userDetect");
+		});
 		if (projectAuth.currentUser) {
-			const userId = projectAuth.currentUser.uid;
-
-			projectAuth.onAuthStateChanged(_user => {
-				store.dispatch("userDetect");
-			});
-
-			const login = async () => {
-				await projectFirestore
-					.collection("user")
-					.doc(userId)
-					.update({ isLogin: true });
-			};
-			const logout = async () => {
-				await projectFirestore
-					.collection("user")
-					.doc(userId)
-					.update({ isLogin: false });
-			};
-
-			onMounted(() => {
-				login();
-			});
-			window.addEventListener("beforeunload", logout);
 		}
 	},
 };
