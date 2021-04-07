@@ -4,7 +4,8 @@
 		<div v-else>
 			<h2>Profile</h2>
 			<div class="profile">
-				<img :src="collection.url" />
+				<img src="../assets/img/user.png" v-if="collection.url === ''" />
+				<img :src="collection.url" v-else />
 			</div>
 			<div v-if="collection.displayName !== ''">
 				<h3>Name</h3>
@@ -95,10 +96,10 @@ export default {
 		}
 	}
 	& h2 {
-		color: #777;
+		color: var(--grey-dark);
 	}
 	& h3 {
-		color: #9999;
+		color: var(--grey-light);
 		margin-top: 0.5rem;
 		border-bottom: 2px solid #9999;
 		display: inline-block;

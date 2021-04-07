@@ -11,7 +11,7 @@
 			<p class="email">
 				Currently logged in as {{ user.email }}
 				<router-link :to="{ name: 'Update', params: { id: user.uid } }"
-					><font-awesome-icon icon="pen" style="color:#777" class='pen'
+					><font-awesome-icon icon="pen" style="color:#777" class="pen-icon"
 				/></router-link>
 			</p>
 		</div>
@@ -56,9 +56,10 @@ nav {
 	justify-content: space-between;
 	align-items: center;
 
-	& .pen {
+	& .pen-icon {
 		margin-left: 0.5rem;
 	}
+
 	& .cover {
 		margin-right: 2rem;
 	}

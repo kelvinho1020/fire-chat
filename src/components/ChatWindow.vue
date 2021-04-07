@@ -6,11 +6,12 @@
 				v-for="message in formattedDocuments"
 				:class="message.email === user.email ? 'currentUser' : ''"
 				:key="message.id"
-			><router-link :to="{ name: 'Profile', params: { id: message.uid } }">
-				<div class="cover">
-					<img class="icon" :src="message.url" v-if="message.url" />
-					<img class="icon" src="../assets/img/user.png" v-else />
-				</div>
+			>
+				<router-link :to="{ name: 'Profile', params: { id: message.uid } }">
+					<div class="cover">
+						<img class="icon" :src="message.url" v-if="message.url" />
+						<img class="icon" src="../assets/img/user.png" v-else />
+					</div>
 				</router-link>
 				<span class="created-at">{{ message.createdAt }}</span>
 				<span class="name">{{ message.name }}</span>
@@ -37,7 +38,6 @@ export default {
 		const userDocuments = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
-
 
 		// Firestore snapshot
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
@@ -109,7 +109,7 @@ export default {
 			}
 		});
 
-		return { documents, error, formattedDocuments, messages, user };
+		return { documents, error, formattedDocuments, messages, user};
 	},
 };
 </script>
@@ -118,6 +118,7 @@ export default {
 .chat-window {
 	background: #fafafa;
 	padding: 3rem 2rem;
+	min-height: 46rem;
 }
 .single {
 	margin: 1.8rem 0 1.8rem 1.3rem;

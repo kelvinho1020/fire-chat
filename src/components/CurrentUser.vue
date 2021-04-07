@@ -88,21 +88,21 @@ export default {
 	top: 0;
 	bottom: 0;
 	left: 0;
-	right: -17px; // move to hide the scroll bar
+	right: -1.7rem; // move to hide the scroll bar
 	overflow-y: scroll;
 
 	& .title {
 		font-weight: 700;
 		margin: 2rem 0;
 		position: relative;
-		right: -13px;
+		right: -1.3rem;
 	}
 
 	& .user-container {
 		display: flex;
 		flex-wrap: wrap;
 		position: relative;
-		right: -10px;
+		right: -1rem;
 	}
 
 	.single {
@@ -134,7 +134,7 @@ export default {
 		}
 
 		& p {
-			color: #444;
+			color:  var(--grey-dark);
 			font-weight: 600;
 		}
 	}

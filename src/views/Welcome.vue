@@ -3,13 +3,13 @@
 		<p>Welcome to Firechat</p>
 		<div v-if="showLogin">
 			<h2>Login</h2>
-			<LoginForm @login="enterChat" />
-			<p>no account yet? <span @click="showLogin = false">Signup </span>instead</p>
+			<LoginForm @login="enterChat" @loading="isLoading" @notLoading="notLoading" />
+			<p v-if="!loading">no account yet? <span @click="showLogin = false">Signup </span>instead</p>
 		</div>
 		<div v-else>
 			<h2>SignUp</h2>
-			<SignupForm @signup="enterChat" />
-			<p>Already registered <span @click="showLogin = true">Login </span>instead</p>
+			<SignupForm @signup="enterChat" @loading="isLoading" @notLoading="notLoading" />
+			<p v-if="!loading">Already registered <span @click="showLogin = true">Login </span>instead</p>
 		</div>
 	</div>
 </template>
@@ -27,12 +27,21 @@ export default {
 
 		// Variables
 		const showLogin = ref(true);
+		const loading = ref(false);
 
 		const enterChat = () => {
 			router.push({ name: "Chatroom" });
 		};
 
-		return { showLogin, enterChat };
+		const isLoading = isLoad => {
+			loading.value = isLoad;
+		};
+
+		const notLoading = notLoad => {
+			loading.value = notLoad;
+		};
+
+		return { showLogin, enterChat, loading, isLoading, notLoading };
 	},
 };
 </script>
@@ -62,16 +71,6 @@ export default {
 	& label {
 		display: block;
 		margin: 2rem 0 0.1rem;
-	}
-
-	& input {
-		width: 100%;
-		padding: 1rem;
-		border-radius: 2rem;
-		border: 1px solid #eee;
-		outline: none;
-		color: var(--grey-light);
-		margin: 1rem auto;
 	}
 
 	& button {

@@ -64,8 +64,9 @@ export default {
 		const handleSubmit = async () => {
 			loading.value = true;
 			formIsValid.value = true;
+			error.value = "";
 			try {
-				if (name.value === "" || description.value === "" ) {
+				if (name.value === "" || description.value === "") {
 					error.value = "Please enter a valid name and description";
 					formIsValid.value = false;
 					throw new Error("Please enter a valid name and description");
@@ -107,7 +108,7 @@ export default {
 			} catch (err) {
 				formIsValid.value = false;
 				loading.value = false;
-				err.value = err.message;
+				error.value = err.message;
 			}
 		};
 
@@ -173,16 +174,6 @@ export default {
 	& label {
 		display: block;
 		margin: 2rem 0 0.1rem;
-	}
-
-	& input {
-		width: 100%;
-		padding: 1rem;
-		border-radius: 2rem;
-		border: 1px solid #eee;
-		outline: none;
-		color: var(--grey-light);
-		margin: 1rem auto;
 	}
 
 	& .name {

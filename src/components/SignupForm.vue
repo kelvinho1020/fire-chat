@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<BaseSpinner v-if="loading" />
+		<BaseSpinner v-if="loading" class='spinner'/>
 		<form @submit.prevent="handleSubmit" v-else>
 			<input type="text" placeholder="display name" v-model="displayName" />
 			<input type="email" placeholder="email" v-model="email" />
@@ -31,8 +31,9 @@ export default {
 		const handleSubmit = async () => {
 			formIsValid.value = true;
 			error.value = "";
+			loading.value = true;
+			context.emit("loading", loading.value);
 			try {
-				loading.value = true;
 				await store.dispatch("signup", {
 					email: email.value,
 					password: password.value,
@@ -40,10 +41,12 @@ export default {
 				});
 				loading.value = false;
 				context.emit("signup");
+				context.emit("notLoading", loading.value);
 			} catch (err) {
 				loading.value = false;
 				formIsValid.value = false;
 				error.value = err.message;
+				context.emit("notLoading", loading.value);
 			}
 		};
 
@@ -52,4 +55,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.spinner {
+	margin-top: 2rem;
+}
+</style>

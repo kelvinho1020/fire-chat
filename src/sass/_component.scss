@@ -9,8 +9,16 @@
 	background: white;
 	position: relative;
 	overflow: hidden;
+}
 
-
+input {
+	width: 100%;
+	padding: 1rem;
+	border-radius: 2rem;
+	border: 1px solid #eee;
+	outline: none;
+	color: var(--grey-light);
+	margin: 1rem auto;
 }
 
 .error {
