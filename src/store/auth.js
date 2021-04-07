@@ -15,7 +15,7 @@ export default {
 		},
 	},
 	actions: {
-		async signup(context, payload) {
+		async signup(_, payload) {
 			try {
 				if (payload.displayName === "" || !payload.email.includes(".com") || !payload.email.includes("@")) {
 					throw new Error("Please enter valid email and display name!");
@@ -36,7 +36,7 @@ export default {
 				throw new Error(err.message);
 			}
 		},
-		async login(context, payload) {
+		async login(_, payload) {
 			try {
 				const authRes = await projectAuth.signInWithEmailAndPassword(payload.email, payload.password);
 				if (!authRes) {
@@ -46,7 +46,7 @@ export default {
 				throw new Error(err.message);
 			}
 		},
-		async logout(context) {
+		async logout(_) {
 			const userId = projectAuth.currentUser.uid;
 			const userRef = projectDatabase.ref("users/" + userId);
 			userRef.remove();
@@ -61,17 +61,17 @@ export default {
 
 			context.commit("setUser", { user });
 			console.log("detected");
-
-			try {
-				const userRef = await projectFirestore
-					.collection("user")
-					.doc(user.uid)
-					.get();
-				const userCollection = userRef.data();
-				// console.log(userCollection);
-				context.commit("setUserCollection", userCollection);
-			} catch (err) {
-				console.log(err.message);
+			if (user) {
+				try {
+					const userRef = await projectFirestore
+						.collection("user")
+						.doc(user.uid)
+						.get();
+					const userCollection = userRef.data();
+					context.commit("setUserCollection", userCollection);
+				} catch (err) {
+					console.log(err.message);
+				}
 			}
 		},
 		async userCollectionDetect(context, payload) {
@@ -86,20 +86,6 @@ export default {
 				console.log(err.message);
 			}
 		},
-		async allUserCollection(context,payload){
-			try {
-				const userRef = await projectFirestore
-					.collection("user")
-					.get();
-
-				console.log(userRef)
-				const userCollection = userRef.data();
-
-				context.commit("setUserCollection", userCollection);
-			} catch (err) {
-				console.log(err.message);
-			}
-		}
 	},
 	getters: {
 		getUser(state) {

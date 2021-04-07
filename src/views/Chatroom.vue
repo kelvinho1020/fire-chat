@@ -28,8 +28,7 @@ export default {
 	justify-content: center;
 
 	& .container {
-		margin-left: 0rem;
-		margin-right: 0rem;
+		margin: 4rem 0;
 	}
 
 	.currentUser {

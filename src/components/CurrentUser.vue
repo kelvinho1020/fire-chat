@@ -4,11 +4,11 @@
 		<div v-for="user in status" :key="user.id" class="user-container">
 			<div class="single">
 				<div class="status" :class="user.status"></div>
-				<router-link :to="{ name: 'Profile', params: { id: user.id } } ">
+				<router-link :to="{ name: 'Profile', params: { id: user.id } }">
 					<div class="cover">
-					<img class="icon" :src="user.photoURL" v-if="user.photoURL" />
-					<img class="icon" src="../assets/img/user.png" v-else />
-				</div>
+						<img class="icon" :src="user.photoURL" v-if="user.photoURL" />
+						<img class="icon" src="../assets/img/user.png" v-else />
+					</div>
 				</router-link>
 				<p>{{ user.displayName }}</p>
 			</div>
@@ -22,7 +22,6 @@ import { projectAuth, projectDatabase } from "../firebase/config";
 export default {
 	setup() {
 		const status = ref([]);
-
 		const user = projectAuth.currentUser;
 		const userId = projectAuth.currentUser.uid;
 		const usersRef = projectDatabase.ref("users/");
@@ -57,7 +56,7 @@ export default {
 
 			// Listen to all users
 			const unsub2 = usersRef.on("value", function(snap) {
-				if (snap) {
+				if (snap && snap.val() !== null) {
 					status.value = [];
 					for (const [key, value] of Object.entries(snap.val())) {
 						let _user = { ...value };

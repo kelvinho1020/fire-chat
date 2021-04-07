@@ -6,11 +6,12 @@
 				v-for="message in formattedDocuments"
 				:class="message.email === user.email ? 'currentUser' : ''"
 				:key="message.id"
-			>
+			><router-link :to="{ name: 'Profile', params: { id: message.uid } }">
 				<div class="cover">
 					<img class="icon" :src="message.url" v-if="message.url" />
 					<img class="icon" src="../assets/img/user.png" v-else />
 				</div>
+				</router-link>
 				<span class="created-at">{{ message.createdAt }}</span>
 				<span class="name">{{ message.name }}</span>
 				<span class="message">{{ message.message }}</span>
@@ -30,12 +31,13 @@ export default {
 		// Vue stuff
 		const store = useStore();
 
+		// Variables
+		const user = computed(() => store.getters.getUser);
 		const documents = ref(null);
 		const userDocuments = ref(null);
 		const error = ref(null);
 		const messages = ref(null);
 
-		const user = computed(() => store.getters.getUser);
 
 		// Firestore snapshot
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");

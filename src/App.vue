@@ -5,13 +5,10 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
 import { useStore } from "vuex";
-import { projectAuth, projectFirestore, projectDatabase } from "./firebase/config";
-import firebase from "firebase/app";
+import { projectAuth } from "./firebase/config";
 export default {
 	setup() {
-		const user = projectAuth.currentUser;
 		const store = useStore();
 		projectAuth.onAuthStateChanged(_user => {
 			store.dispatch("userDetect");

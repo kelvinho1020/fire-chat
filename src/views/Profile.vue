@@ -1,15 +1,25 @@
 <template>
 	<div class="container">
-		<h2>Profile</h2>
-		<div class="profile">
-			<img :src="collection.url" />
+		<BaseSpinner v-if="loading" />
+		<div v-else>
+			<h2>Profile</h2>
+			<div class="profile">
+				<img :src="collection.url" />
+			</div>
+			<div v-if="collection.displayName !== ''">
+				<h3>Name</h3>
+				<h2>{{ collection.displayName }}</h2>
+			</div>
+			<div v-if="collection.description !== ''">
+				<h3>About me</h3>
+				<h2>{{ collection.description }}</h2>
+			</div>
+			<div class="form-group"></div>
+			<router-link :to="{ name: 'Update', params: { id: user.uid } }"
+				><button type="button" v-if="user.uid === collection.id">Update</button></router-link
+			>
+			<router-link :to="{ name: 'Chatroom' }"><button type="button">Back</button></router-link>
 		</div>
-		<p>{{ collection.displayName }}</p>
-		<div class="form-group"></div>
-		<router-link :to="{ name: 'Update', params: { id: user.uid } }"
-			><button type="button" v-if="user.uid === collection.id">Update</button></router-link
-		>
-		<router-link :to="{ name: 'Chatroom' }"><button type="button">Back</button></router-link>
 	</div>
 </template>
 
@@ -20,17 +30,29 @@ import { useRoute } from "vue-router";
 import { projectAuth } from "../firebase/config";
 export default {
 	setup() {
-		const user = projectAuth.currentUser;
+		// Vue stuff
 		const store = useStore();
 		const route = useRoute();
+
+		// Handling
 		const collection = ref("");
+		const loading = ref(false);
+
+		// Variables
+		const user = projectAuth.currentUser;
 
 		const userCollection = (async function() {
-			await store.dispatch("userCollectionDetect", route.params.id);
-			collection.value = computed(() => store.getters.getUserCollection).value;
+			loading.value = true;
+			try {
+				await store.dispatch("userCollectionDetect", route.params.id);
+				loading.value = false;
+				collection.value = computed(() => store.getters.getUserCollection).value;
+			} catch (err) {
+				loading.value = false;
+			}
 		})();
 
-		return { collection, user };
+		return { collection, user, loading };
 	},
 };
 </script>
@@ -72,9 +94,17 @@ export default {
 			right: 50%;
 		}
 	}
-
 	& h2 {
-		margin-top: 2rem;
+		color: #777;
+	}
+	& h3 {
+		color: #9999;
+		margin-top: 0.5rem;
+		border-bottom: 2px solid #9999;
+		display: inline-block;
+		margin-bottom: 1rem;
+		padding: 1rem 4rem;
+		font-size: 2rem;
 	}
 
 	& form {

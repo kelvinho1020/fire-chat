@@ -9,15 +9,16 @@
 					<input id="photo" type="file" @change="handleChange" />
 				</label>
 			</div>
-			<div class="form-group">
+			<BaseSpinner v-if="loading" />
+			<div class="form-group" v-else>
 				<label>Display Name</label>
 				<input type="text" class="name" placeholder="update your display name" v-model="name" />
 				<label>Description</label>
-				<input type="text" class="description" placeholder="tell about yourself" v-model="description" />
+				<input type="text" class="description" placeholder="tell others about yourself" v-model="description" />
 			</div>
 			<p class="error" v-if="error">{{ error }}</p>
-			<button>Save</button>
-			<router-link :to="{ name: 'Chatroom' }"><button type="button">Back</button></router-link>
+			<button v-if="!loading">Save</button>
+			<router-link :to="{ name: 'Chatroom' }" v-if="!loading"><button type="button">Back</button></router-link>
 		</form>
 	</div>
 </template>
@@ -34,20 +35,22 @@ export default {
 		const router = useRouter();
 		const store = useStore();
 
+		// Handling
+		const error = ref(null);
+		const loading = ref(false);
+		const formIsValid = ref(true);
+
 		// Variables
-		const user = projectAuth.currentUser;
 		const file = ref(null);
 		const name = ref("");
 		const url = ref("");
 		const tempUrl = ref("");
 		const description = ref("");
-		const error = ref(null);
+		const userCollection = computed(() => store.getters.getUserCollection);
 
-		// allowed types
+		// Allowed types
 		const types = ["image/png", "image/jpeg"];
 
-		// Vue store
-		const userCollection = computed(() => store.getters.getUserCollection);
 		store.dispatch("userDetect");
 
 		const handleChange = e => {
@@ -59,7 +62,14 @@ export default {
 		};
 
 		const handleSubmit = async () => {
+			loading.value = true;
+			formIsValid.value = true;
 			try {
+				if (name.value === "" || description.value === "" ) {
+					error.value = "Please enter a valid name and description";
+					formIsValid.value = false;
+					throw new Error("Please enter a valid name and description");
+				}
 				// Profile picture
 				let filePath = `users/${props.id}/${file.value.name}`;
 				const storageRef = projectStorage.ref(filePath);
@@ -72,7 +82,7 @@ export default {
 				} catch (err) {
 					console.log("do not have this file");
 				}
-				
+
 				// Update FireStorage
 				const res = await storageRef.put(file.value);
 				url.value = await res.ref.getDownloadURL();
@@ -93,13 +103,15 @@ export default {
 				store.dispatch("userDetect");
 
 				router.push({ name: "Chatroom" });
+				loading.value = false;
 			} catch (err) {
-				console.log(err);
+				formIsValid.value = false;
+				loading.value = false;
 				err.value = err.message;
 			}
 		};
 
-		return { name, handleSubmit, handleChange, tempUrl, error, description };
+		return { name, handleSubmit, handleChange, tempUrl, error, description, loading };
 	},
 };
 </script>
