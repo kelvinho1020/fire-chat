@@ -125,6 +125,7 @@ export default {
 		& .online {
 			background: greenyellow;
 		}
+		
 		& .away {
 			background: orange;
 		}

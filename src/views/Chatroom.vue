@@ -8,7 +8,7 @@
 			<ChatWindow />
 			<NewChatForm />
 		</div>
-		<ThemeNav class="theme" />
+		<ThemeNav />
 	</div>
 </template>
 
@@ -37,11 +37,6 @@ export default {
 	.currentUser {
 		width: 10rem;
 		margin-right: 5rem;
-	}
-
-	.theme {
-		margin-top: 5rem;
-		margin-left: 6rem;
 	}
 }
 </style>

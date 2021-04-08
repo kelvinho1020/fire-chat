@@ -20,7 +20,6 @@ export default {
 			if (!e.target.dataset.color) return;
 			document.documentElement.style.setProperty("--background", e.target.dataset.color);
 			localStorage.setItem("color", e.target.dataset.color);
-			console.log(e.target.dataset.color);
 		};
 
 		onMounted(() => {
@@ -36,10 +35,12 @@ export default {
 .palette {
 	background-color: #fff;
 	height: 6rem;
-	width: 6rem;
+	min-width: 6rem;
 	border-radius: 50px;
 	position: relative;
 	cursor: pointer;
+    margin-left: 4rem;
+    margin-top: 4rem;
 
 	.palette-icon {
 		position: absolute;
