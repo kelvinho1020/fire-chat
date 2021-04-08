@@ -5,14 +5,14 @@ import "firebase/storage";
 import "firebase/database";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyCE8ygKv4AVrpjhJJVqlcniv2D17fEI0k4",
-	authDomain: "firechat-d684b.firebaseapp.com",
-	projectId: "firechat-d684b",
-	storageBucket: "firechat-d684b.appspot.com",
-	messagingSenderId: "808090669138",
-	appId: "1:808090669138:web:73433ef718103d26198f8b",
+	apiKey: process.env.VUE_APP_FIREBASE_API_KEY || "api-key-not-set",
+	authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN || "env-not-set",
+	projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID || "env-not-set",
+	storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET || "env-not-set",
+	messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID || "env-not-set",
+	appId: process.env.VUE_APP_FIREBASE_APP_ID || "env-not-set",
 };
-
+console.log(process.env.VUE_APP_API_KEY);
 firebase.initializeApp(firebaseConfig);
 
 const projectAuth = firebase.auth();
