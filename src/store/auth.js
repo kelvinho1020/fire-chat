@@ -60,7 +60,6 @@ export default {
 			let user = projectAuth.currentUser;
 
 			context.commit("setUser", { user });
-			console.log("detected");
 			if (user) {
 				try {
 					const userRef = await projectFirestore

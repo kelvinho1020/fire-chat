@@ -12,7 +12,6 @@ const firebaseConfig = {
 	messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID || "env-not-set",
 	appId: process.env.VUE_APP_FIREBASE_APP_ID || "env-not-set",
 };
-console.log(process.env.VUE_APP_API_KEY);
 firebase.initializeApp(firebaseConfig);
 
 const projectAuth = firebase.auth();
