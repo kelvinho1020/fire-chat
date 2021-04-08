@@ -13,8 +13,6 @@ export default {
 		projectAuth.onAuthStateChanged(_user => {
 			store.dispatch("userDetect");
 		});
-		if (projectAuth.currentUser) {
-		}
 	},
 };
 </script>

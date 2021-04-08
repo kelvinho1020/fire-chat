@@ -134,7 +134,7 @@ export default {
 		}
 
 		& p {
-			color:  var(--grey-dark);
+			color: var(--grey-dark);
 			font-weight: 600;
 		}
 	}

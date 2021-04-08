@@ -65,13 +65,13 @@ export default {
 			loading.value = true;
 			formIsValid.value = true;
 			error.value = "";
+
 			try {
-				if (name.value === "" || description.value === "") {
-					error.value = "Please enter a valid name and description";
+				if (name.value === "" || description.value === "" || file.value === null ) {
 					formIsValid.value = false;
 					throw new Error("Please enter a valid name and description");
 				}
-				// Profile picture
+				// Storage path & Ref
 				let filePath = `users/${props.id}/${file.value.name}`;
 				const storageRef = projectStorage.ref(filePath);
 
@@ -81,18 +81,12 @@ export default {
 					await deleteStorageRef.getDownloadURL();
 					await deleteStorageRef.delete();
 				} catch (err) {
-					console.log("do not have this file");
+					throw new Error("Do not have this file");
 				}
 
 				// Update FireStorage
 				const res = await storageRef.put(file.value);
 				url.value = await res.ref.getDownloadURL();
-
-				// Update Auth profile
-				await projectAuth.currentUser.updateProfile({
-					displayName: name.value,
-					photoURL: url.value,
-				});
 
 				// Update User collection
 				await projectFirestore
@@ -100,11 +94,17 @@ export default {
 					.doc(props.id)
 					.update({ displayName: name.value, filePath: filePath, url: url.value, description: description.value });
 
+				// Update Auth profile
+				await projectAuth.currentUser.updateProfile({
+					displayName: name.value,
+					photoURL: url.value,
+				});
+
 				// Update store
 				store.dispatch("userDetect");
 
-				router.push({ name: "Chatroom" });
 				loading.value = false;
+				router.push({ name: "Chatroom" });
 			} catch (err) {
 				formIsValid.value = false;
 				loading.value = false;

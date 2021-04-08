@@ -39,7 +39,7 @@ export default {
 		const error = ref(null);
 		const messages = ref(null);
 
-		// Firestore snapshot
+		// Firestore collection
 		let collectionRef = projectFirestore.collection("message").orderBy("createdAt");
 		let usercollectionRef = projectFirestore.collection("user");
 
@@ -65,14 +65,14 @@ export default {
 			snap => {
 				let i = 0;
 				let size = snap.size;
-				let sizeToDelete = size - 50;
+				let sizeToDelete = size - 5;
 
 				let results = [];
-				snap.docs.forEach(async doc => {
+				snap.docs.forEach(doc => {
 					doc.data().createdAt && results.push({ ...doc.data(), id: doc.id });
 
 					if (i < sizeToDelete) {
-						await doc.ref.delete();
+						doc.ref.delete();
 					}
 					i++;
 				});
@@ -86,7 +86,7 @@ export default {
 			}
 		);
 
-		// Fromat the timestamp
+		// Fromat the timestamp and url
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
 				return documents.value.map(doc => {
@@ -99,6 +99,8 @@ export default {
 
 		watchEffect(onInvalidate => {
 			onInvalidate(() => unsub1());
+		});
+		watchEffect(onInvalidate => {
 			onInvalidate(() => unsub2());
 		});
 
@@ -109,7 +111,7 @@ export default {
 			}
 		});
 
-		return { documents, error, formattedDocuments, messages, user};
+		return { documents, error, formattedDocuments, messages, user };
 	},
 };
 </script>

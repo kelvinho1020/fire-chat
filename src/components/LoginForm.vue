@@ -27,15 +27,16 @@ export default {
 		const loading = ref(false);
 
 		const handleSubmit = async () => {
-			loading.value = true;
-			context.emit("loading", loading.value);
 			formIsValid.value = true;
 			error.value = "";
+			loading.value = true;
+			context.emit("loading", loading.value);
 			try {
 				await store.dispatch("login", {
 					email: email.value,
 					password: password.value,
 				});
+				
 				context.emit("login");
 				loading.value = false;
 				context.emit("notLoading", loading.value);

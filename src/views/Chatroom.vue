@@ -8,6 +8,7 @@
 			<ChatWindow />
 			<NewChatForm />
 		</div>
+		<ThemeNav class="theme" />
 	</div>
 </template>
 
@@ -16,8 +17,10 @@ import Navbar from "../components/Navbar";
 import NewChatForm from "../components/NewChatForm";
 import ChatWindow from "../components/ChatWindow";
 import CurrentUser from "../components/CurrentUser";
+import ThemeNav from "../components/ThemeNav";
+
 export default {
-	components: { Navbar, NewChatForm, ChatWindow, CurrentUser },
+	components: { Navbar, NewChatForm, ChatWindow, CurrentUser, ThemeNav },
 	setup() {},
 };
 </script>
@@ -34,6 +37,11 @@ export default {
 	.currentUser {
 		width: 10rem;
 		margin-right: 5rem;
+	}
+
+	.theme {
+		margin-top: 5rem;
+		margin-left: 6rem;
 	}
 }
 </style>

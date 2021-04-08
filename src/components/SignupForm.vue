@@ -39,6 +39,7 @@ export default {
 					password: password.value,
 					displayName: displayName.value,
 				});
+				
 				loading.value = false;
 				context.emit("signup");
 				context.emit("notLoading", loading.value);
