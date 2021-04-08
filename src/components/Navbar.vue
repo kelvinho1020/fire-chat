@@ -7,7 +7,7 @@
 					<img class="icon" src="../assets/img/user.png" v-else />
 				</div>
 			</router-link>
-			<p>Hey there {{ user.displayName }} !</p>
+			<p><span>Hey there</span> {{ user.displayName }} !</p>
 			<p class="email">
 				Currently logged in as {{ user.email }}
 				<router-link :to="{ name: 'Update', params: { id: user.uid } }"
@@ -68,11 +68,31 @@ nav {
 		margin: 2px auto;
 		font-size: 16px;
 		color: var(--grey-dark);
+
+		@media only screen and (max-width: $bp-small) {
+			font-size: 3rem;
+			float: left;
+			margin-top: 1.5rem;
+		}
+	}
+
+	& span {
+		display: none;
+	}
+
+	button {
+		@media only screen and (max-width: $bp-small) {
+			padding: 1rem;
+		}
 	}
 
 	.email {
 		font-size: 1.4rem;
 		color: var(--grey-light);
+
+		@media only screen and (max-width: $bp-small) {
+			display: none;
+		}
 	}
 }
 </style>

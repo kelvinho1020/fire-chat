@@ -1,8 +1,14 @@
+$bp-largest: 75em;   
+$bp-large: 68.75em;  
+$bp-medium: 56.25em; 
+$bp-small: 37.5em;   
+$bp-smallest: 31.25em;
+
 :root {
 	--primary: #5ae4ca;
-	
 	--background: #e3e1ff;
 
 	--grey-light: #999;
 	--grey-dark: #444;
 }
+

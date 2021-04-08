@@ -67,7 +67,7 @@ export default {
 			error.value = "";
 
 			try {
-				if (name.value === "" || description.value === "" || file.value === null ) {
+				if (name.value === "" || description.value === "" || file.value === null) {
 					formIsValid.value = false;
 					throw new Error("Please enter a valid name and description");
 				}
@@ -126,8 +126,8 @@ export default {
 
 	& .profile {
 		margin: 20px auto;
-		width: 150px;
-		height: 150px;
+		width: 15rem;
+		height: 15rem;
 		position: relative;
 		border-radius: 100px;
 		background-color: royalblue;
@@ -163,6 +163,13 @@ export default {
 	& form {
 		width: 80rem;
 		margin: 2rem auto;
+
+		@media only screen and (max-width: $bp-small) {
+			width: 40rem;
+		}
+		@media only screen and (max-width: 25em) {
+			width: 30rem;
+		}
 	}
 
 	.form-group {

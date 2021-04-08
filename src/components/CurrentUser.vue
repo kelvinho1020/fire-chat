@@ -91,6 +91,10 @@ export default {
 	right: -1.7rem; // move to hide the scroll bar
 	overflow-y: scroll;
 
+	@media only screen and (max-width: $bp-medium) {
+		bottom: -1.7rem;
+	}
+
 	& .title {
 		font-weight: 700;
 		margin: 2rem 0;
@@ -125,7 +129,7 @@ export default {
 		& .online {
 			background: greenyellow;
 		}
-		
+
 		& .away {
 			background: orange;
 		}

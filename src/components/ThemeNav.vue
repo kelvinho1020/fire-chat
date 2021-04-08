@@ -39,8 +39,16 @@ export default {
 	border-radius: 50px;
 	position: relative;
 	cursor: pointer;
-    margin-left: 4rem;
-    margin-top: 4rem;
+	margin-left: 4rem;
+	margin-top: 4rem;
+
+	@media only screen and (max-width: $bp-medium) {
+		margin-right: 2rem;
+	}
+
+	@media only screen and (max-width: $bp-small) {
+		display: none;
+	}
 
 	.palette-icon {
 		position: absolute;

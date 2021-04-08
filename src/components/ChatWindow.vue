@@ -65,7 +65,7 @@ export default {
 			snap => {
 				let i = 0;
 				let size = snap.size;
-				let sizeToDelete = size - 5;
+				let sizeToDelete = size - 50;
 
 				let results = [];
 				snap.docs.forEach(doc => {
@@ -121,6 +121,14 @@ export default {
 	background: #fafafa;
 	padding: 3rem 2rem;
 	min-height: 46rem;
+
+	@media only screen and (max-width: $bp-medium) {
+			min-height: 70vh;
+		}
+
+	@media only screen and (max-width: $bp-small) {
+		min-height: 75vh;
+	}
 }
 .single {
 	margin: 1.8rem 0 1.8rem 1.3rem;
@@ -142,6 +150,14 @@ export default {
 .messages {
 	max-height: 40rem;
 	overflow: auto;
+
+	@media only screen and (max-width: $bp-medium) {
+		min-height: 63vh;
+	}
+
+	@media only screen and (max-width: $bp-small) {
+		min-height: 75vh;
+	}
 }
 .currentUser {
 	text-align: right;

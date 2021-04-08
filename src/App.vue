@@ -19,4 +19,9 @@ export default {
 
 <style lang="scss">
 @import url("../src/sass/main.scss");
+html {
+	@media only screen and (max-width: $bp-medium) {
+		font-size: 50%;
+	}
+}
 </style>
