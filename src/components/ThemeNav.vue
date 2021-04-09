@@ -13,9 +13,31 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 export default {
 	setup() {
+		const secretCode = [38, 38, 40, 40, 37, 39, 37, 39];
+		const input = ref([]);
+
+		// Just for fun
+		window.addEventListener("keyup", function(e) {
+			input.value.push(e.keyCode);
+
+			// reset
+			input.value.forEach((_, i) => {
+				if (secretCode[i] !== input.value[i]) {
+					input.value = [];
+				}
+			});
+
+			if (secretCode.join("") === input.value.join("")) {
+				input.value = [];
+				const randomColor = "#" + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6);
+				document.documentElement.style.setProperty("--background", randomColor);
+				localStorage.setItem("color", randomColor);
+			}
+		});
+
 		const themeHandler = function(e) {
 			if (!e.target.dataset.color) return;
 			document.documentElement.style.setProperty("--background", e.target.dataset.color);

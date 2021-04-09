@@ -19,9 +19,12 @@ import ChatWindow from "../components/ChatWindow";
 import CurrentUser from "../components/CurrentUser";
 import ThemeNav from "../components/ThemeNav";
 
+
 export default {
 	components: { Navbar, NewChatForm, ChatWindow, CurrentUser, ThemeNav },
-	setup() {},
+	setup() {
+
+	},
 };
 </script>
 
@@ -29,6 +32,10 @@ export default {
 .outer {
 	display: flex;
 	justify-content: center;
+	// background-image: url("../assets/img/background.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: bottom;
 
 	@media only screen and (max-width: $bp-small) {
 		flex-direction: column;
