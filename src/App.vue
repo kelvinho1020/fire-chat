@@ -18,16 +18,11 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("../src/sass/main.scss");
-
-* {
-	margin: 0;
-	padding: 0;
-}
-
 *,
 *::before,
 *::after {
+	margin: 0;
+	padding: 0;
 	box-sizing: inherit;
 }
 
