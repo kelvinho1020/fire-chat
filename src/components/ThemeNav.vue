@@ -13,14 +13,15 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 export default {
 	setup() {
 		const secretCode = [38, 38, 40, 40, 37, 39, 37, 39];
 		const input = ref([]);
 
 		// Just for fun
-		window.addEventListener("keyup", function(e) {
+		function changeStyle(e) {
+			console.log("add");
 			input.value.push(e.keyCode);
 
 			// reset
@@ -36,7 +37,7 @@ export default {
 				document.documentElement.style.setProperty("--background", randomColor);
 				localStorage.setItem("color", randomColor);
 			}
-		});
+		}
 
 		const themeHandler = function(e) {
 			if (!e.target.dataset.color) return;
@@ -45,7 +46,12 @@ export default {
 		};
 
 		onMounted(() => {
+			window.addEventListener("keyup", changeStyle);
 			document.documentElement.style.setProperty("--background", localStorage.getItem("color"));
+		});
+
+		onBeforeUnmount(() => {
+			window.removeEventListener("keyup", changeStyle);
 		});
 
 		return { themeHandler };

@@ -85,7 +85,7 @@ export default {
 				error.value = "could not fetch the data";
 			}
 		);
-
+		
 		// Fromat the timestamp and url
 		const formattedDocuments = computed(() => {
 			if (documents.value) {
@@ -123,8 +123,8 @@ export default {
 	min-height: 46rem;
 
 	@media only screen and (max-width: $bp-medium) {
-			min-height: 70vh;
-		}
+		min-height: 70vh;
+	}
 
 	@media only screen and (max-width: $bp-small) {
 		min-height: 75vh;
