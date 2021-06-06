@@ -12,7 +12,7 @@ https://hyperfirechat.netlify.app
 - Custom themes
 - Realtime chat communication
 - Users online statuses
-- Users's profile
+- Users profile
 - Use firebase as backend
 
 ![image](https://github.com/kelvinho1020/fire-chat/blob/master/Animation.gif)
