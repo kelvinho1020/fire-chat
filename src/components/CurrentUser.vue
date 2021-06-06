@@ -10,7 +10,7 @@
 						<img class="icon" src="../assets/img/user.png" v-else />
 					</div>
 				</router-link>
-				<p>{{ user.displayName }}</p>
+				<p>{{ user.displayName && user.displayName.length > 5 ? user.displayName.slice(0, 5) + '...' : user.displayName }}</p>
 			</div>
 		</div>
 	</div>
