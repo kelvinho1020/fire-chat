@@ -9,13 +9,11 @@ https://hyperfirechat.netlify.app
 - password: 123456789
 
 ## Features
-- Custom style
-- Message submit 
-- Chat with multiple participants
+- Custom themes
+- Realtime chat communication
 - Users online statuses
-- Support for users's profile
+- Users's profile
 - Use firebase as backend
-- Support for timestamp
 
 ![image](https://github.com/kelvinho1020/fire-chat/blob/master/Animation.gif)
 
