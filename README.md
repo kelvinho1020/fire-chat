@@ -5,8 +5,8 @@ This application is a simple chat Application building by vue3
 https://hyperfirechat.netlify.app
 
 ### Testing account
-email: user1@gmail.com
-password: 123456789
+- email: user1@gmail.com
+- password: 123456789
 
 ## Features
 - Custom style
