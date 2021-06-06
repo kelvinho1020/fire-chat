@@ -69,19 +69,23 @@ export default {
 			try {
 				if (name.value === "" || description.value === "" || file.value === null) {
 					formIsValid.value = false;
-					throw new Error("Please enter a valid name and description");
+					throw new Error("Please enter a valid name and description and update a user icon");
 				}
+
 				// Storage path & Ref
 				let filePath = `users/${props.id}/${file.value.name}`;
 				const storageRef = projectStorage.ref(filePath);
 
 				// Delete FireStorage
 				const deleteStorageRef = projectStorage.ref(userCollection.value.filePath);
-				try {
-					await deleteStorageRef.getDownloadURL();
-					await deleteStorageRef.delete();
-				} catch (err) {
-					throw new Error("Do not have this file");
+				
+				if (userCollection.value.filePath !== "") {
+					try {
+						await deleteStorageRef.getDownloadURL();
+						await deleteStorageRef.delete();
+					} catch (err) {
+						throw new Error("Do not have this file");
+					}
 				}
 
 				// Update FireStorage
@@ -109,6 +113,7 @@ export default {
 				formIsValid.value = false;
 				loading.value = false;
 				error.value = err.message;
+				console.log(err);
 			}
 		};
 
