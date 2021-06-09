@@ -1,5 +1,5 @@
 # vue-fire-chat
-This application is a simple chat Application building by vue3
+This application is a realtime chat Application building with vue3 and firebase 
 
 ## Demo
 https://hyperfirechat.netlify.app
